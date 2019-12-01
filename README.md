@@ -1,2 +1,2 @@
 # aoc2019-rust
-Advent of code 2019 in Rust
+My attempt to solve advent of code 2019 in Rust
