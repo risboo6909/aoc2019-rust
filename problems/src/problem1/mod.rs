@@ -1,4 +1,4 @@
-use utils::{split_by_lines, ok_result, ProblemResult};
+use utils::{split_by_lines, result, ProblemResult, Ret};
 
 fn fuel_req(mass: u32) -> u32 {
     let a = mass / 3;
@@ -9,15 +9,15 @@ fn fuel_req(mass: u32) -> u32 {
     }
 }
 
-fn first_star(input: &[u32]) -> u32 {
+fn first_star(input: &[u32]) -> ProblemResult<u32> {
     let mut fuel = 0;
     for mass in input {
         fuel += fuel_req(*mass);
     }
-    fuel
+    Ok(fuel)
 }
 
-fn second_star(input: &[u32]) -> u32 {
+fn second_star(input: &[u32]) -> ProblemResult<u32> {
     let mut fuel = 0;
 
     for mass in input {
@@ -28,12 +28,12 @@ fn second_star(input: &[u32]) -> u32 {
         }
     }
 
-    fuel
+    Ok(fuel)
 }
 
-pub(crate) fn solve() -> ProblemResult<u32> {
+pub(crate) fn solve() -> Ret<u32> {
     let input_raw = include_str!("./input");
     let input: Vec<u32> = split_by_lines(input_raw, &|e: &str| e.parse::<u32>().unwrap());
 
-    ok_result(first_star(&input), second_star(&input))
+    result(first_star(&input), second_star(&input))
 }
