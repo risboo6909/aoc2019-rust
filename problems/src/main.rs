@@ -1,18 +1,27 @@
 mod problem1;
 mod problem2;
+mod problem3;
 
+use failure::_core::fmt::Error;
 use std::fmt::Debug;
 use colored::*;
 
-use utils::Ret;
+use utils::{Ret, ProblemResult};
 
 // problems
 use crate::problem1 as p1;
 use crate::problem2 as p2;
+use crate::problem3 as p3;
 
-fn exec<T: Debug>(f: &dyn Fn() -> Ret<T>, problem_no: u32) {
-    let answer = f();
-    println!("{} {}:\n{}\n", "problem".bold(), problem_no.to_string().bold(), answer);
+fn exec<T: Debug>(f: &dyn Fn() -> Result<Ret<T>, Error>, problem_no: u32) {
+    let result = f();
+    match result {
+        Err(err) => println!("{} {}:\n{}: {}\n", "problem".bold(),
+                                  problem_no.to_string().bold(),
+                                  "error".bold().red(), err),
+        Ok(answer) => println!("{} {}:\n{}\n", "problem".bold(),
+                               problem_no.to_string().bold(), answer),
+    }
 }
 
 fn main() {

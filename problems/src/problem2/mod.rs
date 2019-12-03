@@ -69,9 +69,10 @@ fn second_star(program: &mut [u32]) -> ProblemResult<u32> {
 
 }
 
-pub(crate) fn solve() -> Ret<u32> {
+pub(crate) fn solve() -> Result<Ret<u32>, Error> {
     let input_raw = include_str!("./input");
-    let input: Vec<u32> = split_by_comma(input_raw, &|e: &str| e.parse::<u32>().unwrap());
+    let mut input: Vec<u32> = split_by_comma(input_raw, &|e: &str| e.parse::<u32>()
+        .or(Err(format_err!("Failed to parse input"))))?;
 
-    result(first_star(&mut input.clone()), second_star(&mut input.clone()))
+    Ok(result(first_star(&mut input.clone()), second_star(&mut input.clone())))
 }

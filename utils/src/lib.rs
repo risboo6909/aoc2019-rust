@@ -1,8 +1,10 @@
 use std::fmt::{self, Display, Debug, Formatter};
+use std::iter::FromIterator;
 use colored::*;
 use failure::Error;
 
 pub type ProblemResult<T> = Result<T, Error>;
+pub type ParseResult<T> = Result<T, Error>;
 
 pub struct Ret<T> {
     answer_basic: ProblemResult<T>,
@@ -28,16 +30,16 @@ pub fn result<T: Debug>(basic: ProblemResult<T>, adv: ProblemResult<T>) -> Ret<T
     }
 }
 
-pub fn split_by_lines<T>(input: &str, f: &dyn Fn(&str) -> T) -> Vec<T> {
+pub fn split_by_lines<T>(input: &str, f: &dyn Fn(&str) -> ParseResult<T>) -> ParseResult<Vec<T>> {
     split_by(input, '\n', f)
 }
 
-pub fn split_by_comma<T>(input: &str, f: &dyn Fn(&str) -> T) -> Vec<T> {
+pub fn split_by_comma<T>(input: &str, f: &dyn Fn(&str) -> ParseResult<T>) -> ParseResult<Vec<T>> {
     split_by(input, ',', f)
 }
 
-pub fn split_by<T>(input: &str, sep: char, f: &dyn Fn(&str) -> T) -> Vec<T> {
-    input.split(sep)
+pub fn split_by<T>(input: &str, sep: char, f: &dyn Fn(&str) -> ParseResult<T>) -> ParseResult<Vec<T>> {
+    let res: ParseResult<Vec<_>> = input.split(sep)
          .filter(|item|
              if item != &"" {
                  true
@@ -46,5 +48,7 @@ pub fn split_by<T>(input: &str, sep: char, f: &dyn Fn(&str) -> T) -> Vec<T> {
              }
          )
          .map(|item| f(item))
-         .collect::<Vec<T>>()
+         .collect();
+
+    res
 }

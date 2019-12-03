@@ -1,3 +1,4 @@
+use failure::{Error, format_err};
 use utils::{split_by_lines, result, ProblemResult, Ret};
 
 fn fuel_req(mass: u32) -> u32 {
@@ -31,9 +32,10 @@ fn second_star(input: &[u32]) -> ProblemResult<u32> {
     Ok(fuel)
 }
 
-pub(crate) fn solve() -> Ret<u32> {
+pub(crate) fn solve() -> Result<Ret<u32>, Error> {
     let input_raw = include_str!("./input");
-    let input: Vec<u32> = split_by_lines(input_raw, &|e: &str| e.parse::<u32>().unwrap());
+    let input: Vec<u32> = split_by_lines(input_raw, &|e: &str|
+        e.parse::<u32>().or(Err(format_err!("Failed to parse input"))))?;
 
-    result(first_star(&input), second_star(&input))
+    Ok(result(first_star(&input), second_star(&input)))
 }
