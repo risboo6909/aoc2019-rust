@@ -119,13 +119,15 @@ fn solve_both_stars(wires: &[Vec<Op>]) -> ProblemResult<(u32, u32)> {
     let mut min_total_len = std::u32::MAX;
 
     for p in overlaps.iter() {
-        let mut net_length = 0u32;
-        for wire_no in 0..wires.len() {
-            net_length += lengths[&(wire_no, *p)];
-        }
+
+        let net_length = (0..wires.len())
+            .map(|wire_no| lengths[&(wire_no, *p)])
+            .sum();
+
         if min_total_len > net_length {
             min_total_len = net_length;
         }
+
     }
 
     Ok((man_dist_2d(min_point.x, min_point.y, 0, 0) as u32, min_total_len))
