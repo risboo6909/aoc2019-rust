@@ -1,7 +1,10 @@
 use std::fmt::{self, Display, Debug, Formatter};
-use std::iter::FromIterator;
+use num;
+use num_traits::sign::Signed;
 use colored::*;
 use failure::Error;
+use failure::_core::ops::{Add, Sub};
+use num_traits::FromPrimitive;
 
 pub type ProblemResult<T> = Result<T, Error>;
 pub type ParseResult<T> = Result<T, Error>;
@@ -21,6 +24,10 @@ impl<T: Debug> Display for Ret<T> {
             self.answer_adv
         )
     }
+}
+
+pub fn man_dist_2d<T: Add<Output=T> + Sub<Output=T> + Signed>(x1: T, y1: T, x2: T, y2: T) -> T {
+    num::abs(x1 - x2) + num::abs(y1 - y2)
 }
 
 pub fn result<T: Debug>(basic: ProblemResult<T>, adv: ProblemResult<T>) -> Ret<T> {

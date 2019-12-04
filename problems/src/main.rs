@@ -2,11 +2,11 @@ mod problem1;
 mod problem2;
 mod problem3;
 
-use failure::_core::fmt::Error;
+use failure::Error;
 use std::fmt::Debug;
 use colored::*;
 
-use utils::{Ret, ProblemResult};
+use utils::Ret;
 
 // problems
 use crate::problem1 as p1;
@@ -28,4 +28,5 @@ fn main() {
     println!("\n{}\n\n", "Advent of code 2019".bold());
     exec(&p1::solve, 1);
     exec(&p2::solve, 2);
+    exec(&p3::solve, 3);
 }
