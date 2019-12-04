@@ -4,9 +4,9 @@ use utils::{split_by_lines, result, ProblemResult, Ret};
 fn fuel_req(mass: u32) -> u32 {
     let a = mass / 3;
     if a >= 2 {
-        return a - 2;
+        a - 2
     } else {
-        return 0;
+        0
     }
 }
 
@@ -35,7 +35,7 @@ fn second_star(input: &[u32]) -> ProblemResult<u32> {
 pub(crate) fn solve() -> Result<Ret<u32>, Error> {
     let input_raw = include_str!("./input");
     let input: Vec<u32> = split_by_lines(input_raw, &|e: &str|
-        e.parse::<u32>().or(Err(format_err!("Failed to parse input"))))?;
+        e.parse::<u32>().or_else(|_| Err(format_err!("Failed to parse input"))))?;
 
     Ok(result(first_star(&input), second_star(&input)))
 }

@@ -3,7 +3,7 @@ use failure::format_err;
 
 use utils::{split_by_lines, split_by_comma, result, man_dist_2d, ProblemResult, Ret, ParseResult};
 
-#[derive(Debug, Hash, PartialEq, Eq, Copy, Clone)]
+#[derive(Hash, PartialEq, Eq, Copy, Clone)]
 enum Dir {
     Left,
     Right,
@@ -11,19 +11,17 @@ enum Dir {
     Down,
 }
 
-#[derive(Debug, Hash, PartialEq, Eq)]
 struct Op {
     dir: Dir,
     steps: u32,
 }
 
-#[derive(Debug, Hash, PartialEq, Eq, Copy, Clone)]
+#[derive(Hash, PartialEq, Eq, Copy, Clone)]
 struct Point {
     x: i32,
     y: i32,
 }
 
-#[derive(Debug, Hash, PartialEq, Eq, Copy, Clone)]
 struct Cursor {
     wire_len: u32,
     coords: Point,
@@ -73,7 +71,7 @@ fn make_moves(points: &mut HashMap<Point, HashSet<usize>>, lengths: &mut HashMap
         advance_cursor(cursor, op.dir);
 
         points.entry(cursor.coords)
-              .or_insert(HashSet::new())
+              .or_insert_with(HashSet::new)
               .insert(wire_no);
 
         lengths.entry((wire_no, cursor.coords))
@@ -86,13 +84,13 @@ fn make_moves(points: &mut HashMap<Point, HashSet<usize>>, lengths: &mut HashMap
     }
 
     intersections
-
 }
 
-fn solve_both_stars(wires: &Vec<Vec<Op>>) -> ProblemResult<(u32, u32)> {
+fn solve_both_stars(wires: &[Vec<Op>]) -> ProblemResult<(u32, u32)> {
 
     let mut points = HashMap::new();
     let mut lengths = HashMap::new();
+
     let mut overlaps: HashSet<Point> = HashSet::new();
 
     // assume central port is at (0, 0)

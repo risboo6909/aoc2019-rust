@@ -4,7 +4,6 @@ use num_traits::sign::Signed;
 use colored::*;
 use failure::Error;
 use failure::_core::ops::{Add, Sub};
-use num_traits::FromPrimitive;
 
 pub type ProblemResult<T> = Result<T, Error>;
 pub type ParseResult<T> = Result<T, Error>;
@@ -47,13 +46,7 @@ pub fn split_by_comma<T>(input: &str, f: &dyn Fn(&str) -> ParseResult<T>) -> Par
 
 pub fn split_by<T>(input: &str, sep: char, f: &dyn Fn(&str) -> ParseResult<T>) -> ParseResult<Vec<T>> {
     let res: ParseResult<Vec<_>> = input.split(sep)
-         .filter(|item|
-             if item != &"" {
-                 true
-             } else {
-                 false
-             }
-         )
+         .filter(|item| item != &"")
          .map(|item| f(item))
          .collect();
 

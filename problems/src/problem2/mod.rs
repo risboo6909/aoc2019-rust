@@ -60,7 +60,7 @@ fn second_star(program: &mut [u32]) -> ProblemResult<u32> {
         program[1] = noun;
         program[2] = verb;
 
-        if interpret(program)? == 19690720 {
+        if interpret(program)? == 19_690_720 {
             return Ok(100 * noun + verb);
         }
     }
@@ -72,7 +72,7 @@ fn second_star(program: &mut [u32]) -> ProblemResult<u32> {
 pub(crate) fn solve() -> Result<Ret<u32>, Error> {
     let input_raw = include_str!("./input");
     let input: Vec<u32> = split_by_comma(input_raw, &|e: &str| e.parse::<u32>()
-        .or(Err(format_err!("Failed to parse input"))))?;
+        .or_else(|_| Err(format_err!("Failed to parse input"))))?;
 
     Ok(result(first_star(&mut input.clone()), second_star(&mut input.clone())))
 }
