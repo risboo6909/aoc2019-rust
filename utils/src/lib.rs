@@ -1,10 +1,10 @@
 use std::fmt::{self, Display, Debug, Formatter};
-use num;
-use num_traits::sign::Signed;
+use core::ops::{Add, Sub};
+use std::convert::TryFrom;
+
 use colored::*;
 use failure::Error;
-use failure::_core::ops::{Add, Sub};
-use num_traits::{Num, CheckedDiv};
+use num_traits::{Num, CheckedDiv, sign::Signed};
 
 pub type ProblemResult<T> = Result<T, Error>;
 pub type ParseResult<T> = Result<T, Error>;

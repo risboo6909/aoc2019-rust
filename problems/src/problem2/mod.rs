@@ -1,32 +1,32 @@
 use failure::{Error, format_err};
 
-use crate::computer::{Computer, Stdin};
+use crate::computer::Computer;
 use utils::{split_by_comma, result, ProblemResult, Ret};
 
-fn first_star(program: &mut [u32]) -> ProblemResult<u32> {
+fn first_star(program: &mut [isize]) -> ProblemResult<isize> {
 
     // input for the program
     program[1] = 12;
     program[2] = 2;
 
-    let mut c = Computer::<u32>::new();
+    let mut c = Computer::new();
 
     // run the program
     c.interpret(program)
 }
 
-fn second_star(program: &mut [u32]) -> ProblemResult<u32> {
+fn second_star(program: &mut [isize]) -> ProblemResult<isize> {
 
-    let mut saved_program: Vec<u32> = vec![0; program.len()];
-    let mut c = Computer::<u32>::new();
+    let mut saved_program: Vec<isize> = vec![0; program.len()];
+    let mut c = Computer::new();
 
     saved_program.clone_from_slice(&program);
 
-    for n in 0..10000 {
+    for n in 0..10000isize {
 
         let program = &mut saved_program.clone();
 
-        let (noun, verb) = (n % 100u32, n / 100u32);
+        let (noun, verb) = (n % 100, n / 100);
 
         // input for the program
         program[1] = noun;
@@ -41,10 +41,10 @@ fn second_star(program: &mut [u32]) -> ProblemResult<u32> {
 
 }
 
-pub(crate) fn solve() -> Result<Ret<u32>, Error> {
+pub(crate) fn solve() -> Result<Ret<isize>, Error> {
     let input_raw = include_str!("./input");
-    let input: Vec<u32> = split_by_comma(input_raw, &|e: &str| e.parse::<u32>()
-        .or_else(|_| Err(format_err!("Failed to parse input"))))?;
+    let input = split_by_comma(input_raw, &|e: &str| e.parse::<isize>()
+        .or_else(|err| Err(format_err!("Failed to parse input: {}", err))))?;
 
     let r1 = first_star(&mut input.clone());
     let r2 = second_star(&mut input.clone());
