@@ -4,6 +4,7 @@ use num_traits::sign::Signed;
 use colored::*;
 use failure::Error;
 use failure::_core::ops::{Add, Sub};
+use num_traits::{Num, CheckedDiv};
 
 pub type ProblemResult<T> = Result<T, Error>;
 pub type ParseResult<T> = Result<T, Error>;
@@ -49,6 +50,18 @@ pub fn split_by<T>(input: &str, sep: char, f: &dyn Fn(&str) -> ParseResult<T>) -
          .filter(|item| item != &"")
          .map(|item| f(item))
          .collect();
+
+    res
+}
+
+pub fn split_digits<T: Copy + Clone + From<u32> + CheckedDiv<Output=T> + Num>(n: T) ->
+                                                                    Vec<u32> where u32: From<T> {
+    if n == T::zero() {
+        return Vec::new();
+    }
+
+    let mut res = split_digits(n / T::from(10));
+    res.push(u32::from(n % (T::from(10))));
 
     res
 }

@@ -1,20 +1,25 @@
 use failure::{Error, format_err};
 
-use crate::interpreter::interpret;
+use crate::computer::{Computer, Stdin};
 use utils::{split_by_comma, result, ProblemResult, Ret};
 
 fn first_star(program: &mut [u32]) -> ProblemResult<u32> {
+
     // input for the program
     program[1] = 12;
     program[2] = 2;
 
+    let mut c = Computer::<u32>::new();
+
     // run the program
-    interpret(program)
+    c.interpret(program)
 }
 
 fn second_star(program: &mut [u32]) -> ProblemResult<u32> {
 
     let mut saved_program: Vec<u32> = vec![0; program.len()];
+    let mut c = Computer::<u32>::new();
+
     saved_program.clone_from_slice(&program);
 
     for n in 0..10000 {
@@ -27,7 +32,7 @@ fn second_star(program: &mut [u32]) -> ProblemResult<u32> {
         program[1] = noun;
         program[2] = verb;
 
-        if interpret(program)? == 19_690_720 {
+        if c.interpret(program)? == 19_690_720 {
             return Ok(100 * noun + verb);
         }
     }

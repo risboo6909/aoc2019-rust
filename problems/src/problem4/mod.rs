@@ -1,22 +1,11 @@
 use failure::Error;
 use itertools::chain;
 
-use utils::{result, ProblemResult, Ret};
+use utils::{result, ProblemResult, Ret, split_digits};
 
 const LOWER_BOUND: u32 = 178416;
 const UPPER_BOUND: u32 = 676461;
 
-
-fn split_digits(n: u32) -> Vec<u32> {
-    if n == 0 {
-        return Vec::new();
-    }
-
-    let mut res = split_digits(n / 10);
-    res.push(n % 10);
-
-    res
-}
 
 fn test_non_decr(xs: &[u32]) -> bool {
     for idx in 0..xs.len() {
