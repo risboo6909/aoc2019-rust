@@ -112,8 +112,6 @@ fn solve_both_stars(wires: &[Vec<Op>]) -> ProblemResult<(u32, u32)> {
         return Err(format_err!("Couldn't find appropriate solution!"));
     }
 
-    let min_point = min_point.unwrap();
-
     // find intersection with the minimum wires length (part 2)
 
     let mut min_total_len = std::u32::MAX;
@@ -129,6 +127,8 @@ fn solve_both_stars(wires: &[Vec<Op>]) -> ProblemResult<(u32, u32)> {
         }
 
     }
+
+    let min_point = min_point.unwrap();
 
     Ok((man_dist_2d(min_point.x, min_point.y, 0, 0) as u32, min_total_len))
 }
