@@ -1,10 +1,10 @@
 use failure::Error;
 use itertools::chain;
 
-use utils::{result, ProblemResult, Ret, split_digits};
+use utils::{result, ProblemResult, RetOne, split_digits};
 
-const LOWER_BOUND: u32 = 178416;
-const UPPER_BOUND: u32 = 676461;
+const LOWER_BOUND: u32 = 178_416;
+const UPPER_BOUND: u32 = 676_461;
 
 
 fn test_non_decr(xs: &[u32]) -> bool {
@@ -58,15 +58,15 @@ fn test_adj_two(xs: &[u32]) -> bool {
 
 }
 
-fn pred(n: &u32, p1: &dyn Fn(&[u32]) -> bool, p2: &dyn Fn(&[u32]) -> bool) -> bool {
-    let digits = split_digits(*n);
+fn pred(n: u32, p1: &dyn Fn(&[u32]) -> bool, p2: &dyn Fn(&[u32]) -> bool) -> bool {
+    let digits = split_digits(n);
     p1(&digits) && p2(&digits)
 }
 
 fn first_star() -> ProblemResult<u32> {
 
     let counter = (LOWER_BOUND..=UPPER_BOUND)
-        .filter_map(|n| if pred(&n, &test_non_decr, &test_adj) { Some(1) } else { None })
+        .filter_map(|n| if pred(n, &test_non_decr, &test_adj) { Some(1) } else { None })
         .sum();
 
     Ok(counter)
@@ -76,13 +76,13 @@ fn first_star() -> ProblemResult<u32> {
 fn second_star() -> ProblemResult<u32> {
 
     let counter = (LOWER_BOUND..=UPPER_BOUND)
-        .filter_map(|n| if pred(&n, &test_non_decr, &test_adj_two) { Some(1) } else { None })
+        .filter_map(|n| if pred(n, &test_non_decr, &test_adj_two) { Some(1) } else { None })
         .sum();
 
     Ok(counter)
 
 }
 
-pub(crate) fn solve() -> Result<Ret<u32>, Error> {
+pub(crate) fn solve() -> Result<RetOne<u32>, Error> {
     Ok(result(first_star(), second_star()))
 }

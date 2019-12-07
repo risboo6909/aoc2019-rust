@@ -20,7 +20,7 @@ use crate::problem4 as p4;
 use crate::problem5 as p5;
 
 
-fn exec<T: Debug>(f: &dyn Fn() -> Result<Ret<T>, Error>, problem_no: u32) {
+fn exec<T: Debug, K: Debug>(f: &dyn Fn() -> Result<Ret<T, K>, Error>, problem_no: u32) {
     let result = f();
     match result {
         Err(err) => println!("{} {}:\n{}: {}\n", "problem".bold(),

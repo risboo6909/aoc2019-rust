@@ -1,7 +1,7 @@
 use failure::{Error, format_err};
 
 use crate::computer::Computer;
-use utils::{split_by_comma, result, ProblemResult, Ret};
+use utils::{split_by_comma, result, ProblemResult, RetOne};
 
 fn first_star(program: &mut [isize]) -> ProblemResult<isize> {
 
@@ -9,16 +9,15 @@ fn first_star(program: &mut [isize]) -> ProblemResult<isize> {
     program[1] = 12;
     program[2] = 2;
 
-    let mut c = Computer::new();
+    let mut c = Computer::new(program, 0);
 
     // run the program
-    c.interpret(program)
+    c.interpret()
 }
 
 fn second_star(program: &mut [isize]) -> ProblemResult<isize> {
 
     let mut saved_program: Vec<isize> = vec![0; program.len()];
-    let mut c = Computer::new();
 
     saved_program.clone_from_slice(&program);
 
@@ -32,7 +31,7 @@ fn second_star(program: &mut [isize]) -> ProblemResult<isize> {
         program[1] = noun;
         program[2] = verb;
 
-        if c.interpret(program)? == 19_690_720 {
+        if Computer::new(program, 0).interpret()? == 19_690_720 {
             return Ok(100 * noun + verb);
         }
     }
@@ -41,7 +40,7 @@ fn second_star(program: &mut [isize]) -> ProblemResult<isize> {
 
 }
 
-pub(crate) fn solve() -> Result<Ret<isize>, Error> {
+pub(crate) fn solve() -> Result<RetOne<isize>, Error> {
     let input_raw = include_str!("./input");
     let input = split_by_comma(input_raw, &|e: &str| e.parse::<isize>()
         .or_else(|err| Err(format_err!("Failed to parse input: {}", err))))?;
@@ -49,7 +48,7 @@ pub(crate) fn solve() -> Result<Ret<isize>, Error> {
     let r1 = first_star(&mut input.clone());
     let r2 = second_star(&mut input.clone());
 
-    assert_eq!(*r1.as_ref().unwrap(), 3706713);
+    assert_eq!(*r1.as_ref().unwrap(), 3_706_713);
     assert_eq!(*r2.as_ref().unwrap(), 8609);
 
     Ok(result(r1, r2))
