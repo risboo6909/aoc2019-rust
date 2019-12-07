@@ -9,10 +9,12 @@ fn first_star(program: &mut [isize]) -> ProblemResult<isize> {
     program[1] = 12;
     program[2] = 2;
 
-    let mut c = Computer::new(program, 0);
+    let mut c = Computer::new(program, vec![0]);
 
     // run the program
-    c.interpret()
+    c.interpret()?;
+
+    Ok(c.get_cell(0))
 }
 
 fn second_star(program: &mut [isize]) -> ProblemResult<isize> {
@@ -31,7 +33,11 @@ fn second_star(program: &mut [isize]) -> ProblemResult<isize> {
         program[1] = noun;
         program[2] = verb;
 
-        if Computer::new(program, 0).interpret()? == 19_690_720 {
+        let mut c = Computer::new(program, vec![0]);
+
+        c.interpret()?;
+
+        if c.get_cell(0) == 19_690_720 {
             return Ok(100 * noun + verb);
         }
     }

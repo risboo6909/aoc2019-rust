@@ -6,6 +6,7 @@ mod problem3;
 mod problem4;
 mod problem5;
 mod problem6;
+mod problem7;
 
 use failure::Error;
 use std::fmt::Debug;
@@ -20,7 +21,7 @@ use crate::problem3 as p3;
 use crate::problem4 as p4;
 use crate::problem5 as p5;
 use crate::problem6 as p6;
-
+use crate::problem7 as p7;
 
 fn exec<T: Debug, K: Debug>(f: &dyn Fn() -> Result<Ret<T, K>, Error>, problem_no: u32) {
     let result = f();
@@ -43,4 +44,5 @@ fn main() {
     exec(&p4::solve, 4);
     exec(&p5::solve, 5);
     exec(&p6::solve, 6);
+    exec(&p7::solve, 7);
 }

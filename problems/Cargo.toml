@@ -10,4 +10,5 @@ edition = "2018"
 colored = "1.8"
 failure = "0.1.6"
 itertools = "0.8.2"
+permutohedron = "0.2.4"
 utils = { path = "../utils" }

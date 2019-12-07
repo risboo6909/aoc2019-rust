@@ -45,6 +45,7 @@ impl Modes {
 }
 
 // one operator description
+#[derive(Debug)]
 pub(crate) struct Op {
     pub op_code: isize,
     pub mode_flags: Modes,
