@@ -40,14 +40,14 @@ pub fn result<T: Debug, K: Debug>(basic: ProblemResult<T>, adv: ProblemResult<K>
 }
 
 pub fn split_by_lines<T>(input: &str, f: &dyn Fn(&str) -> ParseResult<T>) -> ParseResult<Vec<T>> {
-    split_by(input, '\n', f)
+    split_by(input, "\n", f)
 }
 
 pub fn split_by_comma<T>(input: &str, f: &dyn Fn(&str) -> ParseResult<T>) -> ParseResult<Vec<T>> {
-    split_by(input, ',', f)
+    split_by(input, ",", f)
 }
 
-pub fn split_by<T>(input: &str, sep: char, f: &dyn Fn(&str) -> ParseResult<T>) -> ParseResult<Vec<T>> {
+pub fn split_by<T>(input: &str, sep: &str, f: &dyn Fn(&str) -> ParseResult<T>) -> ParseResult<Vec<T>> {
     let res: ParseResult<Vec<_>> = input.split(sep)
          .filter(|item| item != &"")
          .map(|item| f(item))
