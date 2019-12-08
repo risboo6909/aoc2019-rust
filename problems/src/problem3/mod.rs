@@ -1,5 +1,5 @@
 use std::collections::{HashMap, HashSet};
-use failure::format_err;
+use failure::{Error, format_err};
 
 use utils::{split_by_lines, split_by_comma, result, man_dist_2d, ProblemResult, RetOne, ParseResult};
 
@@ -133,7 +133,7 @@ fn solve_both_stars(wires: &[Vec<Op>]) -> ProblemResult<(u32, u32)> {
     Ok((man_dist_2d(min_point.x, min_point.y, 0, 0) as u32, min_total_len))
 }
 
-pub(crate) fn solve() -> ProblemResult<RetOne<u32>> {
+pub(crate) fn solve() -> Result<RetOne<u32>, Error> {
 
     let input_raw = include_str!("./input");
 

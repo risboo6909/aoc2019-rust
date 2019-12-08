@@ -4,11 +4,12 @@ use permutohedron as ph;
 use crate::computer::Computer;
 use utils::{split_by_comma, result, ProblemResult, RetOne};
 
+const AMPLIFIERS: isize = 5;
 
 fn first_star(program: &[isize]) -> ProblemResult<isize> {
 
-    let mut xs: [isize; 5] = [0, 1, 2, 3, 4];
-    let perms = ph::Heap::new(&mut xs);
+    let xs = &mut (0..AMPLIFIERS).collect::<Vec<isize>>();
+    let perms = ph::Heap::new(xs);
 
     let mut best_val = 0;
 
@@ -46,10 +47,10 @@ fn exec_amp(amp: &mut Computer, input: isize) -> ProblemResult<(bool, isize)> {
 
 fn second_star(program: &[isize]) -> ProblemResult<isize> {
 
-    let mut xs: [isize; 5] = [5, 6, 7, 8, 9];
-    let mut best_val = 0;
+    let xs = &mut (AMPLIFIERS..2*AMPLIFIERS).collect::<Vec<isize>>();
+    let perms = ph::Heap::new(xs);
 
-    let perms = ph::Heap::new(&mut xs);
+    let mut best_val = 0;
 
     for perm in perms {
 
@@ -63,7 +64,7 @@ fn second_star(program: &[isize]) -> ProblemResult<isize> {
         'outer:
         loop {
 
-            for amp in amps.iter_mut().take(4 + 1) {
+            for amp in amps.iter_mut() {
 
                 let r = exec_amp(amp, input)?;
                 if r.0 {
@@ -73,7 +74,7 @@ fn second_star(program: &[isize]) -> ProblemResult<isize> {
                 input = r.1;
             }
 
-            for amp in amps.iter_mut().take(4 + 1) {
+            for amp in amps.iter_mut() {
                 amp.clear_stdin();
             }
 
@@ -93,6 +94,5 @@ pub(crate) fn solve() -> Result<RetOne<isize>, Error> {
     let input = split_by_comma(input_raw, &|e: &str| e.parse::<isize>()
         .or_else(|err| Err(format_err!("Failed to parse input: {}", err))))?;
 
-    //first_star(&input.clone())
     Ok(result(first_star(&input.clone()), second_star(&input.clone())))
 }
