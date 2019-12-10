@@ -65,9 +65,7 @@ fn second_star(input: &[usize]) -> ProblemResult<String> {
 
         match get_pixel(input, idx) {
             BLACK => *pixel = image::Rgb([0, 0, 0]),
-            WHITE => {
-                *pixel = image::Rgb([255, 255, 255]);
-            },
+            WHITE => *pixel = image::Rgb([255, 255, 255]),
             _ => {},
         };
 

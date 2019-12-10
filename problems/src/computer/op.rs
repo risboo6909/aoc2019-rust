@@ -4,6 +4,7 @@ use std::collections::HashMap;
 pub(crate) enum Mode {
     Indirect,
     Direct,
+    Relative,
 }
 
 #[derive(Debug)]
@@ -18,10 +19,13 @@ impl Modes {
         let mut tmp = HashMap::new();
 
         for (idx, flag) in mode_flags.iter().enumerate() {
-            tmp.insert(idx, if *flag == 0 {
+            tmp.insert(idx,
+            if *flag == 0 {
                 Mode::Indirect
-            } else {
+            } else if *flag == 1 {
                 Mode::Direct
+            } else {
+                Mode::Relative
             });
         }
 
@@ -29,10 +33,6 @@ impl Modes {
             mode_flags: tmp
         }
 
-    }
-
-    pub(crate) fn mark_direct(&mut self, pos: usize) {
-        self.mode_flags.insert(pos, Mode::Direct);
     }
 
     pub(crate) fn get_mode(&self, idx: usize) -> Mode {
@@ -51,9 +51,14 @@ pub(crate) struct Op {
     pub mode_flags: Modes,
 }
 
+pub(crate) struct Arg {
+    pub(crate) value: isize,
+    pub(crate) mode: Mode,
+}
+
 // each operator can have one, two or three operands
 pub(crate) enum Operands {
-    One(isize),
-    Two(isize, isize),
-    Three(isize, isize, isize),
+    One(Arg),
+    Two(Arg, Arg),
+    Three(Arg, Arg, Arg),
 }

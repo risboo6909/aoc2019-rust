@@ -1,20 +1,11 @@
 use failure::{Error, format_err};
 use utils::{result, ProblemResult, Ret, split_by_comma};
 
-use crate::computer::Computer;
-
+use crate::computer::{Computer, consume_until_break};
 
 fn first_star(program: &[isize]) -> ProblemResult<Vec<isize>> {
     let mut c = Computer::new(program, vec![1]);
-    c.interpret()?;
-
-    let mut result = Vec::new();
-    while !c.is_finished() {
-        result.push(c.get_output()?);
-        c.interpret()?;
-    }
-
-    Ok(result)
+    consume_until_break(&mut c)
 }
 
 fn second_star(program: &[isize]) -> ProblemResult<isize> {
