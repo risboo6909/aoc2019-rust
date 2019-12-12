@@ -9,6 +9,7 @@ mod problem6;
 mod problem7;
 mod problem8;
 mod problem9;
+mod problem10;
 
 use failure::Error;
 use std::fmt::Debug;
@@ -26,6 +27,7 @@ use crate::problem6 as p6;
 use crate::problem7 as p7;
 use crate::problem8 as p8;
 use crate::problem9 as p9;
+use crate::problem10 as p10;
 
 
 fn exec<T: Debug, K: Debug>(f: &dyn Fn() -> Result<Ret<T, K>, Error>, problem_no: u32) {
@@ -52,4 +54,5 @@ fn main() {
     exec(&p7::solve, 7);
     exec(&p8::solve, 8);
     exec(&p9::solve, 9);
+    exec(&p10::solve, 10);
 }

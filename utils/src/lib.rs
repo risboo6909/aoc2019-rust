@@ -45,6 +45,10 @@ pub fn dot_product_2d<T: Add<Output=T> + Mul<Output=T> + AddAssign + Num + Copy>
     dot_product(&vec![x1, y1], &vec![x2, y2])
 }
 
+pub fn vec_product_2d<T: Add<Output=T> + Mul<Output=T> + AddAssign + Num + Copy>(x1: T, y1: T, x2: T, y2: T) -> T {
+    x1 * y2 + x2 * y1
+}
+
 pub fn len<T: Add<Output=T> + Mul<Output=T> + AddAssign + Num + Copy>(coords: &[T]) -> f64 where f64: From<T> {
     let mut net: T = T::zero();
 
