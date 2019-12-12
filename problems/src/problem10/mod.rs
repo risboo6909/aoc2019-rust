@@ -1,14 +1,16 @@
-use std::fmt;
+use std::{fmt, f64::EPSILON};
 use std::collections::{HashSet, VecDeque};
 
 use failure::Error;
 
 use utils::{split_by, split_by_lines, result, ProblemResult, RetOne, dot_product_2d, vec_product_2d, normalize_2d};
 
-const PREC: f64 = 0.999_999_999_99;
+const PREC: f64 = 1f64 - EPSILON;
+const UP_VEC: (f64, f64) = (0f64, 1f64);
 const TO_DESTROY: usize = 200;
 
 type Coords<T> = (T, T);
+
 
 #[derive(Debug)]
 struct AngleCoords {
@@ -96,8 +98,9 @@ fn is_visible(from_x: i32, from_y: i32, to_x: i32, to_y: i32, visible: &[Coords<
         }
     }
 
-    let dot: f64 = dot_product_2d(line_of_sight.0, line_of_sight.1, 0f64, 1f64);
-    let det: f64 = vec_product_2d(line_of_sight.0, line_of_sight.1, 0f64, 1f64);
+    let dot: f64 = dot_product_2d(line_of_sight.0, line_of_sight.1, UP_VEC.0, UP_VEC.1);
+    let det: f64 = vec_product_2d(line_of_sight.0, line_of_sight.1, UP_VEC.0, UP_VEC.1);
+
     let angle = det.atan2(dot).to_degrees();
 
     Some(AngleCoords{angle, coords: line_of_sight, board_coords: (to_x as usize, to_y as usize)})
