@@ -16,11 +16,11 @@ fn first_star(program: &[isize]) -> ProblemResult<isize> {
     for perm in perms {
 
         let mut c = Computer::new(program, vec![perm[0], 0]);
-        c.interpret()?;
+        c.step()?;
 
         for j in perm.iter().skip(1) {
             c = Computer::new(program, vec![*j, c.get_output()?]);
-            c.interpret()?;
+            c.step()?;
         }
 
         let final_val = c.get_output()?;
@@ -35,7 +35,7 @@ fn first_star(program: &[isize]) -> ProblemResult<isize> {
 fn exec_amp(amp: &mut Computer, input: isize) -> ProblemResult<(bool, isize)> {
 
     amp.push_stdin(input);
-    amp.interpret()?;
+    amp.step()?;
 
     if amp.is_finished() {
         return Ok((true, 0));

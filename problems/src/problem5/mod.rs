@@ -10,7 +10,7 @@ fn first_star(program: &[isize]) -> ProblemResult<Vec<isize>> {
 
 fn second_star(program: &[isize]) -> ProblemResult<isize> {
     let mut c = Computer::new(program, vec![5]);
-    c.interpret()?;
+    c.step()?;
 
     Ok(c.get_output()?)
 }

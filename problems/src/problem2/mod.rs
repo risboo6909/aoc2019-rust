@@ -12,7 +12,7 @@ fn first_star(program: &mut [isize]) -> ProblemResult<isize> {
     let mut c = Computer::new(program, vec![0]);
 
     // run the program
-    c.interpret()?;
+    c.step()?;
 
     Ok(c.get_cell(0))
 }
@@ -35,7 +35,7 @@ fn second_star(program: &mut [isize]) -> ProblemResult<isize> {
 
         let mut c = Computer::new(program, vec![0]);
 
-        c.interpret()?;
+        c.step()?;
 
         if c.get_cell(0) == 19_690_720 {
             return Ok(100 * noun + verb);

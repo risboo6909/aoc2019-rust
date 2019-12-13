@@ -93,7 +93,7 @@ impl Computer {
         self.stdin.clear()
     }
 
-    pub(crate) fn interpret(&mut self) -> Result<isize, Error> {
+    pub(crate) fn step(&mut self) -> Result<isize, Error> {
 
         loop {
 
