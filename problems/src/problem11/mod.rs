@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use rand::prelude::*;
 
 use failure::{Error, format_err};
 
@@ -174,6 +175,8 @@ fn second_star(program: &[isize]) -> ProblemResult<String> {
 
     let mut imgbuf = image::ImageBuffer::new(width as u32, height as u32);
 
+    let mut rng = rand::thread_rng();
+
     for (idx, pixel) in imgbuf.pixels_mut().enumerate() {
 
         match board.get(&Coords {
@@ -181,7 +184,11 @@ fn second_star(program: &[isize]) -> ProblemResult<String> {
             y: ((idx as isize) / width),
         }).unwrap_or(&Color::Black) {
             Color::Black => *pixel = image::Rgb([0, 0, 0]),
-            Color::White => *pixel = image::Rgb([255, 255, 255]),
+            Color::White => *pixel = image::Rgb([
+                (rng.gen::<f32>() * 255.0) as u8,
+                (rng.gen::<f32>() * 255.0) as u8,
+                (rng.gen::<f32>() * 255.0) as u8],
+            ),
         };
 
     }
