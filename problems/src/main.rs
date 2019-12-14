@@ -11,9 +11,10 @@ mod problem8;
 mod problem9;
 mod problem10;
 mod problem11;
+mod problem12;
 
 use failure::Error;
-use std::fmt::Debug;
+use std::{fmt::Debug, time::SystemTime};
 use colored::*;
 
 use utils::Ret;
@@ -30,7 +31,7 @@ use crate::problem8 as p8;
 use crate::problem9 as p9;
 use crate::problem10 as p10;
 use crate::problem11 as p11;
-
+use crate::problem12 as p12;
 
 fn exec<T: Debug, K: Debug>(f: &dyn Fn() -> Result<Ret<T, K>, Error>, problem_no: u32) {
     let result = f();
@@ -47,6 +48,8 @@ fn exec<T: Debug, K: Debug>(f: &dyn Fn() -> Result<Ret<T, K>, Error>, problem_no
 fn main() {
     println!("\n{}\n\n", "Advent of code 2019".bold());
 
+    let now = SystemTime::now();
+
     exec(&p1::solve, 1);
     exec(&p2::solve, 2);
     exec(&p3::solve, 3);
@@ -58,4 +61,7 @@ fn main() {
     exec(&p9::solve, 9);
     exec(&p10::solve, 10);
     exec(&p11::solve, 11);
+    exec(&p12::solve, 12);
+
+    println!("Time taken: {} millis", now.elapsed().unwrap().as_millis());
 }

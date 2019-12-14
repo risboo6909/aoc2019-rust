@@ -104,7 +104,7 @@ fn drawer(program: &[isize], board: &mut HashMap<Coords, Color>) -> ProblemResul
         // ------------------
         // Up = 0
         // Right = 1
-        // Down = 2s
+        // Down = 2
         // Left = 3
 
         direct += match turn {
