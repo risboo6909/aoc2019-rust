@@ -5,7 +5,6 @@ use colored::*;
 use failure::Error;
 use num_traits::{Num, CheckedDiv, sign::Signed};
 use num::FromPrimitive;
-use failure::_core::iter::FromIterator;
 
 pub type ProblemResult<T> = Result<T, Error>;
 pub type ParseResult<T> = Result<T, Error>;
@@ -42,7 +41,7 @@ pub fn dot_product<T: Add<Output=T> + Mul<Output=T> + AddAssign + Num + Copy>(xs
 }
 
 pub fn dot_product_2d<T: Add<Output=T> + Mul<Output=T> + AddAssign + Num + Copy>(x1: T, y1: T, x2: T, y2: T) -> T {
-    dot_product(&vec![x1, y1], &vec![x2, y2])
+    dot_product(&[x1, y1], &[x2, y2])
 }
 
 pub fn vec_product_2d<T: Add<Output=T> + Mul<Output=T> + AddAssign + Num + Copy>(x1: T, y1: T, x2: T, y2: T) -> T {
@@ -71,7 +70,7 @@ pub fn normalize<T: Div<Output=T> + AddAssign + Num + Copy>(coords: &[T]) -> Vec
 }
 
 pub fn normalize_2d<T: Div<Output=T> + AddAssign + Num + Copy>(coords: (T, T)) -> (f64, f64) where f64: From<T> {
-    let n = normalize(&vec![coords.0, coords.1]);
+    let n = normalize(&[coords.0, coords.1]);
     (n[0], n[1])
 }
 
