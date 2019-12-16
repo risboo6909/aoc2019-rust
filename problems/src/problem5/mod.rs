@@ -1,7 +1,7 @@
-use failure::{Error, format_err};
-use utils::{result, ProblemResult, Ret, split_by_comma};
+use failure::Error;
+use utils::{result, ProblemResult, Ret};
 
-use crate::computer::{Computer, consume_until_break};
+use crate::computer::{Computer, consume_until_break, parse_intcode};
 
 fn first_star(program: &[isize]) -> ProblemResult<Vec<isize>> {
     let mut c = Computer::new(program, vec![1]);
@@ -17,8 +17,7 @@ fn second_star(program: &[isize]) -> ProblemResult<isize> {
 
 pub(crate) fn solve() -> Result<Ret<Vec<isize>, isize>, Error> {
     let input_raw = include_str!("./input");
-    let input = split_by_comma(input_raw, &|e: &str| e.parse::<isize>()
-        .or_else(|err| Err(format_err!("Failed to parse input: {}", err))))?;
+    let input = parse_intcode(input_raw)?;
 
     let r1 = first_star(&input.clone());
     let r2 = second_star(&input.clone());

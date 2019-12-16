@@ -1,8 +1,8 @@
-use failure::{Error, format_err};
+use failure::Error;
 use permutohedron as ph;
 
-use crate::computer::Computer;
-use utils::{split_by_comma, result, ProblemResult, RetOne};
+use crate::computer::{Computer, parse_intcode};
+use utils::{result, ProblemResult, RetOne};
 
 const AMPLIFIERS: isize = 5;
 
@@ -91,8 +91,7 @@ fn second_star(program: &[isize]) -> ProblemResult<isize> {
 
 pub(crate) fn solve() -> Result<RetOne<isize>, Error> {
     let input_raw = include_str!("./input");
-    let input = split_by_comma(input_raw, &|e: &str| e.parse::<isize>()
-        .or_else(|err| Err(format_err!("Failed to parse input: {}", err))))?;
+    let input = parse_intcode(input_raw)?;
 
     Ok(result(first_star(&input.clone()), second_star(&input.clone())))
 }

@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 use rand::prelude::*;
 
-use failure::{Error, format_err};
+use failure::Error;
 
-use crate::computer::Computer;
-use utils::{split_by_comma, result, ProblemResult, Ret};
+use crate::computer::{Computer, parse_intcode};
+use utils::{result, ProblemResult, Ret};
 
 #[derive(Hash, Eq, PartialEq)]
 struct Coords {
@@ -200,8 +200,7 @@ fn second_star(program: &[isize]) -> ProblemResult<String> {
 
 pub(crate) fn solve() -> Result<Ret<usize, String>, Error> {
     let input_raw = include_str!("./input");
-    let input = split_by_comma(input_raw, &|e: &str| e.parse::<isize>()
-        .or_else(|err| Err(format_err!("Failed to parse input: {}", err))))?;
+    let input = parse_intcode(input_raw)?;
 
     Ok(result(first_star(&input.clone()), second_star(&input.clone())))
 }
