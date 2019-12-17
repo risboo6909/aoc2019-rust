@@ -85,12 +85,13 @@ fn drawer(program: &[isize], board: &mut HashMap<Coords, Color>) -> ProblemResul
 
     loop {
 
-        c.push_stdin(isize::from(*board.get(&Coords{x, y}).unwrap_or(&Color::from(0))));
-
         c.step()?;
 
         if c.is_finished() {
             break
+        } else if c.waits_input() {
+            c.set_stdin(isize::from(*board.get(&Coords{x, y}).unwrap_or(&Color::from(0))));
+            c.step()?;
         }
 
         let new_color: Color = c.get_output()?.into();

@@ -10,9 +10,7 @@ fn first_star(program: &[isize]) -> ProblemResult<Vec<isize>> {
 
 fn second_star(program: &[isize]) -> ProblemResult<isize> {
     let mut c = Computer::new(program, vec![5]);
-    c.step()?;
-
-    Ok(c.get_output()?)
+    Ok(consume_until_break(&mut c).unwrap()[0])
 }
 
 pub(crate) fn solve() -> Result<Ret<Vec<isize>, isize>, Error> {

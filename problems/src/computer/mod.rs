@@ -20,11 +20,20 @@ const EQ: isize = 8;
 const BASE: isize = 9;
 const BRK: isize = 99;
 
+const WAIT_INPUT: usize = 1;
+const WAIT_OUTPUT: usize = 2;
+const FINISH: usize = 0;
+
 
 pub(crate) struct Computer {
     pub stdout: Option<isize>,
-    pub stdin: VecDeque<isize>,
-    pub finished: bool,
+    pub stdin: isize,
+
+    init_input: VecDeque<isize>,
+
+    finished: bool,
+    wait_input: bool,
+    input_dest: usize,
 
     program: HashMap<usize, isize>,
     offset: isize,
@@ -33,12 +42,12 @@ pub(crate) struct Computer {
 
 impl Computer {
 
-    pub(crate) fn new(input_program: &[isize], input: Vec<isize>) -> Self {
+    pub(crate) fn new(input_program: &[isize], init_input: Vec<isize>) -> Self {
 
         let mut program: HashMap<usize, isize> = HashMap::new();
         let mut tmp = VecDeque::new();
 
-        tmp.extend(input);
+        tmp.extend(init_input);
 
         // copy program
         for (idx, item) in input_program.iter().enumerate() {
@@ -47,8 +56,13 @@ impl Computer {
 
         Self {
             stdout: None,
-            stdin: tmp,
+            stdin: 0,
+
+            init_input: tmp,
+
             finished: false,
+            wait_input: false,
+            input_dest: 0,
 
             program,
             offset: 0,
@@ -69,6 +83,10 @@ impl Computer {
         self.finished
     }
 
+    pub(crate) fn waits_input(&self) -> bool {
+        self.wait_input
+    }
+
     pub(crate) fn get_output(&mut self) -> Result<isize, Error> {
 
         // error here helps find subtle bugs
@@ -85,15 +103,16 @@ impl Computer {
 
     }
 
-    pub(crate) fn push_stdin(&mut self, val: isize) {
-        self.stdin.push_back(val);
+    pub(crate) fn set_stdin(&mut self, val: isize) {
+        self.stdin = val;
     }
 
-    pub(crate) fn clear_stdin(&mut self) {
-        self.stdin.clear()
-    }
+    pub(crate) fn step(&mut self) -> Result<usize, Error> {
 
-    pub(crate) fn step(&mut self) -> Result<isize, Error> {
+        if self.wait_input {
+            self.set_cell(self.input_dest, self.stdin);
+            self.wait_input = false;
+        }
 
         loop {
 
@@ -117,9 +136,17 @@ impl Computer {
 
                 INP => {
                     if let Operands::One(a) = self.get_ops(self.ip, &op.mode_flags, 1)? {
-                        let v = self.stdin.pop_front().unwrap();
-                        self.set_cell(self.get_arg_addr(a)? as usize, v);
+                        self.input_dest = self.get_arg_addr(a)? as usize;
                         self.ip += 2;
+
+                        if !self.init_input.is_empty() {
+                            self.stdin = self.init_input.pop_front().unwrap();
+                            self.set_cell(self.input_dest, self.stdin);
+                        } else {
+                            self.wait_input = true;
+                            return Ok(WAIT_INPUT);
+                        }
+
                     }
                 },
 
@@ -127,7 +154,7 @@ impl Computer {
                     if let Operands::One(a) = self.get_ops(self.ip, &op.mode_flags, 1)? {
                         self.stdout = Some(self.get_arg_value(a)?);
                         self.ip += 2;
-                        break;
+                        return Ok(WAIT_OUTPUT);
                     }
                 },
 
@@ -174,7 +201,6 @@ impl Computer {
                 },
 
                 BASE => {
-                    //op.mode_flags.mark_direct(0);
                     if let Operands::One(a) = self.get_ops(self.ip, &op.mode_flags, 1)? {
                         self.offset += self.get_arg_value(a)?;
                         self.ip += 2;
@@ -183,7 +209,7 @@ impl Computer {
 
                 BRK => {
                     self.finished = true;
-                    break;
+                    return Ok(FINISH);
                 },
 
                 s => { return Err(format_err!("Unknown state {}", s)) },
@@ -191,8 +217,6 @@ impl Computer {
             }
 
         }
-
-        Ok(0)
 
     }
 

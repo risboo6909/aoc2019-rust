@@ -34,11 +34,13 @@ fn first_star(program: &[isize]) -> ProblemResult<isize> {
 
 fn exec_amp(amp: &mut Computer, input: isize) -> ProblemResult<(bool, isize)> {
 
-    amp.push_stdin(input);
     amp.step()?;
 
     if amp.is_finished() {
         return Ok((true, 0));
+    } else if amp.waits_input() {
+        amp.set_stdin(input);
+        amp.step()?;
     }
 
     Ok((false, amp.get_output().unwrap()))
@@ -74,10 +76,6 @@ fn second_star(program: &[isize]) -> ProblemResult<isize> {
                 input = r.1;
             }
 
-            for amp in amps.iter_mut() {
-                amp.clear_stdin();
-            }
-
        }
 
        if input > best_val {
@@ -93,5 +91,11 @@ pub(crate) fn solve() -> Result<RetOne<isize>, Error> {
     let input_raw = include_str!("./input");
     let input = parse_intcode(input_raw)?;
 
-    Ok(result(first_star(&input.clone()), second_star(&input.clone())))
+    let r1 = first_star(&input.clone());
+    let r2 = second_star(&input.clone());
+
+    assert_eq!(*r1.as_ref().unwrap(), 38_500);
+    assert_eq!(*r2.as_ref().unwrap(), 336_605_60);
+
+    Ok(result(r1, r2))
 }
