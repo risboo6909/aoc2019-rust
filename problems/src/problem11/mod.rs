@@ -81,7 +81,7 @@ fn drawer(program: &[isize], board: &mut HashMap<Coords, Color>) -> ProblemResul
 
     let mut direct = 0;
 
-    let mut c = Computer::new(program, Vec::new());
+    let mut c = Computer::new(program, None);
 
     loop {
 

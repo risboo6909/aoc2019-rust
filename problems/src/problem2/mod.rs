@@ -9,7 +9,7 @@ fn first_star(program: &mut [isize]) -> ProblemResult<isize> {
     program[1] = 12;
     program[2] = 2;
 
-    let mut c = Computer::new(program, Vec::new());
+    let mut c = Computer::new(program, None);
 
     // run the program
     c.step()?;
@@ -33,7 +33,7 @@ fn second_star(program: &mut [isize]) -> ProblemResult<isize> {
         program[1] = noun;
         program[2] = verb;
 
-        let mut c = Computer::new(program, Vec::new());
+        let mut c = Computer::new(program, None);
 
         c.step()?;
 

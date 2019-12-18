@@ -34,7 +34,7 @@ impl AI {
 fn first_star(program: &[isize]) -> ProblemResult<usize> {
 
     let mut blocks_count = 0;
-    let mut c = Computer::new(program, Vec::new());
+    let mut c = Computer::new(program, None);
 
     loop {
 
@@ -66,7 +66,7 @@ fn second_star(program: &mut [isize]) -> ProblemResult<usize> {
     // setup initial state
     program[0] = 2;
 
-    let mut c = Computer::new(program, Vec::new());
+    let mut c = Computer::new(program, None);
 
     let mut x = 0;
 

@@ -4,12 +4,12 @@ use utils::{result, ProblemResult, Ret};
 use crate::computer::{Computer, consume_until_break, parse_intcode};
 
 fn first_star(program: &[isize]) -> ProblemResult<Vec<isize>> {
-    let mut c = Computer::new(program, vec![1]);
+    let mut c = Computer::new(program, Some(vec![1]));
     consume_until_break(&mut c)
 }
 
 fn second_star(program: &[isize]) -> ProblemResult<isize> {
-    let mut c = Computer::new(program, vec![5]);
+    let mut c = Computer::new(program, Some(vec![5]));
     Ok(consume_until_break(&mut c).unwrap()[0])
 }
 

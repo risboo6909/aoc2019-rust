@@ -15,11 +15,11 @@ fn first_star(program: &[isize]) -> ProblemResult<isize> {
 
     for perm in perms {
 
-        let mut c = Computer::new(program, vec![perm[0], 0]);
+        let mut c = Computer::new(program, Some(vec![perm[0], 0]));
         c.step()?;
 
         for j in perm.iter().skip(1) {
-            c = Computer::new(program, vec![*j, c.get_output()?]);
+            c = Computer::new(program, Some(vec![*j, c.get_output()?]));
             c.step()?;
         }
 
@@ -60,7 +60,7 @@ fn second_star(program: &[isize]) -> ProblemResult<isize> {
         let mut amps = Vec::new();
 
         for j in perm.iter() {
-            amps.push(Computer::new(program, vec![*j]))
+            amps.push(Computer::new(program, Some(vec![*j])))
         }
 
         'outer:

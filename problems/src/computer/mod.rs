@@ -29,7 +29,7 @@ pub(crate) struct Computer {
     pub stdout: Option<isize>,
     pub stdin: isize,
 
-    init_input: VecDeque<isize>,
+    init_input: Option<VecDeque<isize>>,
 
     finished: bool,
     wait_input: bool,
@@ -42,12 +42,16 @@ pub(crate) struct Computer {
 
 impl Computer {
 
-    pub(crate) fn new(input_program: &[isize], init_input: Vec<isize>) -> Self {
+    pub(crate) fn new(input_program: &[isize], init_input: Option<Vec<isize>>) -> Self {
 
         let mut program: HashMap<usize, isize> = HashMap::new();
-        let mut tmp = VecDeque::new();
 
-        tmp.extend(init_input);
+        let tmp = match init_input {
+            Some(xs) => {
+                Some(VecDeque::from(xs))
+            },
+            None => None,
+        };
 
         // copy program
         for (idx, item) in input_program.iter().enumerate() {
@@ -138,9 +142,8 @@ impl Computer {
                     if let Operands::One(a) = self.get_ops(self.ip, &op.mode_flags, 1)? {
                         self.input_dest = self.get_arg_addr(a)? as usize;
                         self.ip += 2;
-
-                        if !self.init_input.is_empty() {
-                            self.stdin = self.init_input.pop_front().unwrap();
+                        if self.init_input.is_some() && !self.init_input.as_ref().unwrap().is_empty() {
+                            self.stdin = self.init_input.as_mut().unwrap().pop_front().unwrap();
                             self.set_cell(self.input_dest, self.stdin);
                         } else {
                             self.wait_input = true;

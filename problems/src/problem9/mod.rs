@@ -5,13 +5,13 @@ use utils::{result, ProblemResult, RetOne};
 
 
 fn first_star(program: &[isize]) -> ProblemResult<isize> {
-    let mut c = Computer::new(program, vec![1]);
+    let mut c = Computer::new(program, Some(vec![1]));
     c.step()?;
     Ok(c.get_output()?)
 }
 
 fn second_star(program: &[isize]) -> ProblemResult<isize> {
-    let mut c = Computer::new(program, vec![2]);
+    let mut c = Computer::new(program, Some(vec![2]));
     c.step()?;
     Ok(c.get_output()?)
 }
