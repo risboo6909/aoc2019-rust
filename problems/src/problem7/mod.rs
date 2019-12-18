@@ -95,7 +95,7 @@ pub(crate) fn solve() -> Result<RetOne<isize>, Error> {
     let r2 = second_star(&input.clone());
 
     assert_eq!(*r1.as_ref().unwrap(), 38_500);
-    assert_eq!(*r2.as_ref().unwrap(), 336_605_60);
+    assert_eq!(*r2.as_ref().unwrap(), 33_660_560);
 
     Ok(result(r1, r2))
 }
