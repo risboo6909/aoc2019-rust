@@ -28,8 +28,7 @@ struct Formulae {
 
 impl fmt::Display for Formulae {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.left.iter().join(", "));
-        Ok(())
+        write!(f, "{}", self.left.iter().join(", "))
     }
 }
 
@@ -129,8 +128,9 @@ fn rec(dep_map: &HashMap<String, &Formulae>, reserve: &mut HashMap<String, usize
         // compute rest ore
         while needed > 0 {
             let p = rec(dep_map, reserve, dep_map[&term.label]);
-            let (ore, produced) = ore_required(reserve.entry(term.label.clone()), needed,
-                                                             p.items, p.ore);
+            let (ore, produced) = ore_required(
+                reserve.entry(term.label.clone()), needed, p.items, p.ore
+            );
 
             needed -= produced;
             total_ore += ore;
@@ -148,6 +148,10 @@ fn rec(dep_map: &HashMap<String, &Formulae>, reserve: &mut HashMap<String, usize
 fn first_star(dep_map: &HashMap<String, &Formulae>) -> ProblemResult<usize> {
 
     // start from FUEL
+    Ok(rec(dep_map, &mut HashMap::new(), dep_map["FUEL"]).ore)
+}
+
+fn second_star(dep_map: &HashMap<String, &Formulae>) -> ProblemResult<usize> {
     Ok(rec(dep_map, &mut HashMap::new(), dep_map["FUEL"]).ore)
 }
 
