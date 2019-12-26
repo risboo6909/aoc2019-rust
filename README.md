@@ -26,3 +26,5 @@ My attempt to solve [advent of code](https://adventofcode.com/) 2019 in Rust
 [problem 12](https://adventofcode.com/2019/day/12) - [solution](https://github.com/risboo6909/aoc2019-rust/tree/master/problems/src/problem12)
 
 [problem 13](https://adventofcode.com/2019/day/13) - [solution](https://github.com/risboo6909/aoc2019-rust/tree/master/problems/src/problem13)
+
+[problem 14](https://adventofcode.com/2019/day/14) - [solution](https://github.com/risboo6909/aoc2019-rust/tree/master/problems/src/problem14)
