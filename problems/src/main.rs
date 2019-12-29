@@ -14,6 +14,7 @@ mod problem11;
 mod problem12;
 mod problem13;
 mod problem14;
+mod problem15;
 
 use failure::Error;
 use std::{fmt::Debug, time::SystemTime};
@@ -36,6 +37,7 @@ use crate::problem11 as p11;
 use crate::problem12 as p12;
 use crate::problem13 as p13;
 use crate::problem14 as p14;
+use crate::problem15 as p15;
 
 
 fn exec<T: Debug, K: Debug>(f: &dyn Fn() -> Result<Ret<T, K>, Error>, problem_no: u32) {
@@ -76,6 +78,7 @@ fn main() {
     exec(&p12::solve, 12);
     exec(&p13::solve, 13);
     exec(&p14::solve, 14);
+    exec(&p15::solve, 15);
 
     println!("{} {} {}", "Total time taken:".bold(),
              now.elapsed().unwrap().as_millis().to_string().bold().green(),

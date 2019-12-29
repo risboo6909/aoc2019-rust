@@ -93,8 +93,6 @@ impl Computer {
 
     pub(crate) fn get_output(&mut self) -> Result<isize, Error> {
 
-        // error here helps find subtle bugs
-
         match self.stdout {
 
             Some(x) => {
