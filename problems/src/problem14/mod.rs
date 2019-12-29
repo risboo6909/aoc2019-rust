@@ -143,18 +143,14 @@ fn first_star(dep_map: &HashMap<String, Formulae>) -> ProblemResult<usize> {
 fn find_max(dep_map: &HashMap<String, Formulae>, mut cur_fuel: usize, max_ore: usize) -> usize {
 
     let mut reserve = HashMap::<String, usize>::new();
-
-    let mut max_fuel;
     let mut step = 1;
 
     loop {
 
         let res = compute_ore_consumption(&dep_map, &mut reserve, cur_fuel);
 
-        max_fuel = res.items;
-
         if res.ore >= max_ore {
-            break
+            break res.items
         }
 
         step *= 2;
@@ -162,8 +158,6 @@ fn find_max(dep_map: &HashMap<String, Formulae>, mut cur_fuel: usize, max_ore: u
 
         reserve.clear();
     }
-
-    max_fuel
 
 }
 

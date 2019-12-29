@@ -46,7 +46,6 @@ fn first_star(input: &[usize]) -> ProblemResult<usize> {
 }
 
 fn get_pixel(input: &[usize], idx: usize) -> usize {
-
     match input.iter()
                .skip(idx)
                .step_by(WIDTH*HEIGHT)

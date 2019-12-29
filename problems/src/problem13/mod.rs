@@ -1,7 +1,7 @@
 use failure::Error;
 
 use utils::{result, ProblemResult, RetOne};
-use crate::computer::{Computer, parse_intcode};
+use crate::computer::{Computer, parse_intcode, stop_or_input};
 
 const BLOCK: usize = 2;
 
@@ -15,7 +15,7 @@ struct AI {
 
 impl AI {
 
-    pub(crate) fn move_pad(&mut self, ball_x: isize) -> isize {
+    pub(crate) fn get_move_dir(&mut self, ball_x: isize) -> isize {
         // move the pad
         if ball_x > self.pad_x {
             self.pad_x += 1;
@@ -36,28 +36,28 @@ fn first_star(program: &[isize]) -> ProblemResult<usize> {
     let mut blocks_count = 0;
     let mut c = Computer::new(program, None);
 
-    loop {
+    Ok(
+        loop {
 
-        c.step()?;
-        if c.is_finished() {
-            break
+            c.step()?;
+            if c.is_finished() {
+                break blocks_count
+            }
+
+            c.get_output().unwrap();
+
+            c.step()?;
+            c.get_output().unwrap();
+
+            c.step()?;
+            let title_id = c.get_output().unwrap() as usize;
+
+            if title_id == BLOCK {
+                blocks_count += 1;
+            }
+
         }
-
-        c.get_output().unwrap();
-
-        c.step()?;
-        c.get_output().unwrap();
-
-        c.step()?;
-        let title_id = c.get_output().unwrap() as usize;
-
-        if title_id == BLOCK {
-            blocks_count += 1;
-        }
-
-    }
-
-    Ok(blocks_count)
+    )
 
 }
 
@@ -69,37 +69,33 @@ fn second_star(program: &mut [isize]) -> ProblemResult<usize> {
     let mut c = Computer::new(program, None);
 
     let mut x = 0;
-
     let mut score = 0;
 
     let mut ai = AI {
         pad_x: 22,
     };
 
-    loop {
+    Ok(
+        loop {
 
-        c.step()?;
-
-        if c.is_finished() {
-            break
-        } else if c.waits_input() {
-            c.set_stdin(ai.move_pad(x));
             c.step()?;
+
+            if stop_or_input(&mut c, || ai.get_move_dir(x))? {
+                break score
+            }
+            x = c.get_output()?;
+
+            c.step()?;
+            let y = c.get_output()?;
+
+            c.step()?;
+            if x == -1 && y == 0 {
+                score = c.get_output()? as usize;
+            }
+
         }
+    )
 
-        x = c.get_output()?;
-
-        c.step()?;
-        let y = c.get_output()?;
-
-        c.step()?;
-        if x == -1 && y == 0 {
-            score = c.get_output()? as usize;
-        }
-
-    }
-
-    Ok(score)
 }
 
 pub(crate) fn solve() -> Result<RetOne<usize>, Error> {

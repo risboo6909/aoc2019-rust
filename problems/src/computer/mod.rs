@@ -7,7 +7,7 @@ use failure::{Error, format_err};
 use utils::{split_digits, ParseResult};
 use op::{Modes, Mode, Op, Operands, Arg};
 
-pub(crate) use helpers::{consume_until_break, parse_intcode};
+pub(crate) use helpers::{consume_until_break, parse_intcode, stop_or_input};
 
 const ADD: isize = 1;
 const MUL: isize = 2;

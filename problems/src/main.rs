@@ -39,15 +39,22 @@ use crate::problem14 as p14;
 
 
 fn exec<T: Debug, K: Debug>(f: &dyn Fn() -> Result<Ret<T, K>, Error>, problem_no: u32) {
+
+    let now = SystemTime::now();
     let result = f();
+    let elapsed = now.elapsed().unwrap().as_millis();
+
     match result {
-        Err(err) => println!("{} {}:\n{}: {}\n", "problem".bold(),
+        Err(err) => println!("{} {}:\n{}: {}", "problem".bold(),
                                   problem_no.to_string().bold(),
                                   "error".bold().red(), err),
 
-        Ok(answer) => println!("{} {}:\n{}\n", "problem".bold(),
+        Ok(answer) => println!("{} {}:\n{}", "problem".bold(),
                                  problem_no.to_string().bold(), answer),
     }
+
+    println!("time elapsed for problem: {} millis\n", elapsed);
+
 }
 
 fn main() {
@@ -70,5 +77,7 @@ fn main() {
     exec(&p13::solve, 13);
     exec(&p14::solve, 14);
 
-    println!("Time taken: {} millis", now.elapsed().unwrap().as_millis());
+    println!("{} {} {}", "Total time taken:".bold(),
+             now.elapsed().unwrap().as_millis().to_string().bold().green(),
+             "millis".bold());
 }
