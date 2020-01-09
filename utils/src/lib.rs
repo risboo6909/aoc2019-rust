@@ -1,5 +1,5 @@
-use std::fmt::{self, Display, Debug, Formatter};
-use core::ops::{Add, Sub, Mul, Div, AddAssign};
+use std::{fmt::{self, Display, Debug, Formatter}, string::ToString};
+use core::ops::{Add, Sub, Mul, Div, AddAssign, MulAssign};
 
 use colored::*;
 use failure::Error;
@@ -90,7 +90,8 @@ pub fn split_by_comma<T>(input: &str, f: &dyn Fn(&str) -> ParseResult<T>) -> Par
 }
 
 pub fn split_by<T>(input: &str, sep: &str, f: &dyn Fn(&str) -> ParseResult<T>) -> ParseResult<Vec<T>> {
-    let res: ParseResult<Vec<_>> = input.split(sep)
+    let res: ParseResult<Vec<_>> = input
+         .split(sep)
          .filter(|item| item != &"")
          .map(|item| f(item))
          .collect();
@@ -107,4 +108,23 @@ pub fn split_digits<T: Copy + Clone + FromPrimitive + CheckedDiv<Output=T> + Num
     res.push(n % (T::from_u8(10).unwrap()));
 
     res
+}
+
+pub fn make_number<T, F>(digits: &[T]) -> F
+    where T: Copy + Clone + FromPrimitive + CheckedDiv<Output=T> + Num, F: Copy + Clone + AddAssign + MulAssign + FromPrimitive + Num + From<T> {
+
+    let mut mult = F::one();
+    let mut prod = F::zero();
+
+    for d in digits.iter().rev() {
+        prod += mult * F::from(*d);
+        mult *= F::from_u8(10).unwrap();
+    }
+
+    prod
+}
+
+pub fn number_to_string<T>(digits: &[T]) -> String
+    where T: Copy + Clone + FromPrimitive + CheckedDiv<Output=T> + Num + ToString {
+    digits.iter().map(|d| d.to_string()).collect::<Vec<String>>().join("")
 }

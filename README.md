@@ -30,3 +30,5 @@ My attempt to solve [advent of code](https://adventofcode.com/) 2019 in Rust
 [problem 14](https://adventofcode.com/2019/day/14) - [solution](https://github.com/risboo6909/aoc2019-rust/tree/master/problems/src/problem14)
 
 [problem 15](https://adventofcode.com/2019/day/15) - [solution](https://github.com/risboo6909/aoc2019-rust/tree/master/problems/src/problem15)
+
+[problem 16](https://adventofcode.com/2019/day/16) - [solution](https://github.com/risboo6909/aoc2019-rust/tree/master/problems/src/problem16)
