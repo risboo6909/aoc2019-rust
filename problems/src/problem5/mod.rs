@@ -1,7 +1,7 @@
 use failure::Error;
 use utils::{result, ProblemResult, Ret};
 
-use crate::computer::{Computer, consume_until_break, parse_intcode};
+use crate::computer::{consume_until_break, parse_intcode, Computer};
 
 fn first_star(program: &[isize]) -> ProblemResult<Vec<isize>> {
     let mut c = Computer::new(program, Some(vec![1]));
@@ -20,7 +20,10 @@ pub(crate) fn solve() -> Result<Ret<Vec<isize>, isize>, Error> {
     let r1 = first_star(&input.clone());
     let r2 = second_star(&input.clone());
 
-    assert_eq!(*r1.as_ref().unwrap(), vec![0,0,0,0,0,0,0,0,0,6_731_945]);
+    assert_eq!(
+        *r1.as_ref().unwrap(),
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 6_731_945]
+    );
     assert_eq!(*r2.as_ref().unwrap(), 9_571_668);
 
     Ok(result(r1, r2))

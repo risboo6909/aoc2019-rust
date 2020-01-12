@@ -1,8 +1,7 @@
 use std::collections::HashMap;
 
-use failure::{Error, format_err};
-use utils::{split_by_lines, result, ProblemResult, RetOne};
-
+use failure::{format_err, Error};
+use utils::{result, split_by_lines, ProblemResult, RetOne};
 
 struct Orbit {
     satellite: String,
@@ -10,7 +9,6 @@ struct Orbit {
 }
 
 fn traverse(map: &HashMap<&str, &str>, sat: &str) -> Vec<String> {
-
     let center = map[sat];
     if center == "COM" {
         return vec!["COM".to_owned()];
@@ -23,7 +21,6 @@ fn traverse(map: &HashMap<&str, &str>, sat: &str) -> Vec<String> {
 }
 
 fn first_star(input: &[Orbit]) -> ProblemResult<usize> {
-
     let mut map = HashMap::<&str, &str>::new();
     for item in input {
         map.insert(&item.satellite, &item.center);
@@ -35,11 +32,9 @@ fn first_star(input: &[Orbit]) -> ProblemResult<usize> {
     }
 
     Ok(total)
-
 }
 
 fn second_star(input: &[Orbit]) -> ProblemResult<usize> {
-
     let mut map = HashMap::<&str, &str>::new();
     for item in input {
         map.insert(&item.satellite, &item.center);
@@ -58,13 +53,12 @@ fn second_star(input: &[Orbit]) -> ProblemResult<usize> {
             if your_step == p {
                 // +2 because indexing is starting from 0 but we have to count those ("J" and "D"
                 // in the example above)s
-                return Ok(idx1 + idx2 + 2)
+                return Ok(idx1 + idx2 + 2);
             }
         }
     }
 
     Err(format_err!("Path not found"))
-
 }
 
 pub(crate) fn solve() -> Result<RetOne<usize>, Error> {
@@ -72,7 +66,7 @@ pub(crate) fn solve() -> Result<RetOne<usize>, Error> {
 
     let input: Vec<Orbit> = split_by_lines(input_raw, &|e: &str| {
         let tmp = e.split(')').collect::<Vec<&str>>();
-        Ok(Orbit{
+        Ok(Orbit {
             center: tmp[0].to_owned(),
             satellite: tmp[1].to_owned(),
         })

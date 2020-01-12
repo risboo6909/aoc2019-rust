@@ -1,7 +1,7 @@
 use image;
 
 use failure::Error;
-use utils::{split_by, result, ProblemResult, Ret};
+use utils::{result, split_by, ProblemResult, Ret};
 
 const WIDTH: usize = 25;
 const HEIGHT: usize = 6;
@@ -11,7 +11,6 @@ const WHITE: usize = 1;
 const TRANSP: usize = 2;
 
 fn first_star(input: &[usize]) -> ProblemResult<usize> {
-
     let area = WIDTH * HEIGHT;
 
     let mut zeros = std::usize::MAX;
@@ -46,11 +45,13 @@ fn first_star(input: &[usize]) -> ProblemResult<usize> {
 }
 
 fn get_pixel(input: &[usize], idx: usize) -> usize {
-    match input.iter()
-               .skip(idx)
-               .step_by(WIDTH*HEIGHT)
-               .skip_while(|e| **e == TRANSP)
-               .next() {
+    match input
+        .iter()
+        .skip(idx)
+        .step_by(WIDTH * HEIGHT)
+        .skip_while(|e| **e == TRANSP)
+        .next()
+    {
         Some(e) => *e,
         None => TRANSP,
     }
@@ -61,13 +62,11 @@ fn second_star(input: &[usize]) -> ProblemResult<String> {
     let mut imgbuf = image::ImageBuffer::new(WIDTH as u32, HEIGHT as u32);
 
     for (idx, pixel) in imgbuf.pixels_mut().enumerate() {
-
         match get_pixel(input, idx) {
             BLACK => *pixel = image::Rgb([0, 0, 0]),
             WHITE => *pixel = image::Rgb([255, 255, 255]),
-            _ => {},
+            _ => {}
         };
-
     }
 
     imgbuf.save(filename).unwrap();
@@ -77,8 +76,7 @@ fn second_star(input: &[usize]) -> ProblemResult<String> {
 
 pub(crate) fn solve() -> Result<Ret<usize, String>, Error> {
     let input_raw = include_str!("./input");
-    let input = split_by(input_raw, "", &|e: &str|
-        Ok(e.parse::<usize>()?))?;
+    let input = split_by(input_raw, "", &|e: &str| Ok(e.parse::<usize>()?))?;
 
     Ok(result(first_star(&input), second_star(&input)))
 }

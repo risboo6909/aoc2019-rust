@@ -2,10 +2,9 @@ use std::cmp::min;
 
 use failure::Error;
 
-use utils::{result, ProblemResult, RetOne, make_number, number_to_string};
+use utils::{make_number, number_to_string, result, ProblemResult, RetOne};
 
 const BASE_PAT: [isize; 4] = [0, 1, 0, -1];
-
 
 fn split_to_digits(input: &str) -> Vec<isize> {
     let mut digits = Vec::new();
@@ -22,22 +21,15 @@ fn get_pat_by_idx(pos: usize, idx: usize) -> isize {
 }
 
 fn multiply(xs: &[isize], sums: &[isize], group_len: usize) -> isize {
-
     let mut net = 0;
     let mut idx = min(group_len - 1, 0);
 
     while idx < xs.len() {
-
         let y = get_pat_by_idx(group_len, idx + 1);
 
         if group_len > 0 {
-
             let delta = min(
-                if idx == 0 {
-                    group_len
-                } else {
-                    group_len + 1
-                },
+                if idx == 0 { group_len } else { group_len + 1 },
                 xs.len() - idx,
             );
 
@@ -50,14 +42,10 @@ fn multiply(xs: &[isize], sums: &[isize], group_len: usize) -> isize {
             };
 
             idx += delta;
-
         } else {
-
             net += xs[idx] * y;
             idx += 2;
-
         }
-
     }
 
     net
@@ -70,12 +58,10 @@ fn make_part_sums(digits: &[isize], sums: &mut Vec<isize>) {
 }
 
 fn compute_n_phases(input: &str, phases: usize) -> Vec<isize> {
-
     let mut digits = split_to_digits(input);
     let mut sums = vec![0; digits.len()];
 
     for _ in 0..phases {
-
         let mut pos = 0;
 
         make_part_sums(&digits, &mut sums);
@@ -84,45 +70,38 @@ fn compute_n_phases(input: &str, phases: usize) -> Vec<isize> {
             digits[pos] = multiply(&digits, &sums, pos).abs() % 10;
             pos += 1;
         }
-
     }
 
     digits
 }
 
-
 fn first_star(input: &str, phases: usize) -> ProblemResult<String> {
-
-    let tmp =
-        compute_n_phases(input, phases)
+    let tmp = compute_n_phases(input, phases)
         .iter()
         .take(8)
         .copied()
         .collect::<Vec<isize>>();
 
     Ok(number_to_string(&tmp))
-
 }
 
 fn second_star(input: &str, phases: usize, times: usize) -> ProblemResult<String> {
-
     let offset: isize = make_number(
         &split_to_digits(input)
-        .iter()
-        .take(7)
-        .copied()
-        .collect::<Vec<isize>>()
+            .iter()
+            .take(7)
+            .copied()
+            .collect::<Vec<isize>>(),
     );
 
     let repeated = input.repeat(times);
 
-    let tmp =
-        compute_n_phases(&repeated, phases)
-            .iter()
-            .skip(offset as usize)
-            .take(8)
-            .copied()
-            .collect::<Vec<isize>>();
+    let tmp = compute_n_phases(&repeated, phases)
+        .iter()
+        .skip(offset as usize)
+        .take(8)
+        .copied()
+        .collect::<Vec<isize>>();
 
     Ok(number_to_string(&tmp))
 }

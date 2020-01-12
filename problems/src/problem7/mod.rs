@@ -1,20 +1,18 @@
 use failure::Error;
 use permutohedron as ph;
 
-use crate::computer::{Computer, parse_intcode};
+use crate::computer::{parse_intcode, Computer};
 use utils::{result, ProblemResult, RetOne};
 
 const AMPLIFIERS: isize = 5;
 
 fn first_star(program: &[isize]) -> ProblemResult<isize> {
-
     let xs = &mut (0..AMPLIFIERS).collect::<Vec<isize>>();
     let perms = ph::Heap::new(xs);
 
     let mut best_val = 0;
 
     for perm in perms {
-
         let mut c = Computer::new(program, Some(vec![perm[0], 0]));
         c.step()?;
 
@@ -33,7 +31,6 @@ fn first_star(program: &[isize]) -> ProblemResult<isize> {
 }
 
 fn exec_amp(amp: &mut Computer, input: isize) -> ProblemResult<(bool, isize)> {
-
     amp.step()?;
 
     if amp.is_finished() {
@@ -44,18 +41,15 @@ fn exec_amp(amp: &mut Computer, input: isize) -> ProblemResult<(bool, isize)> {
     }
 
     Ok((false, amp.get_output().unwrap()))
-
 }
 
 fn second_star(program: &[isize]) -> ProblemResult<isize> {
-
-    let xs = &mut (AMPLIFIERS..2*AMPLIFIERS).collect::<Vec<isize>>();
+    let xs = &mut (AMPLIFIERS..2 * AMPLIFIERS).collect::<Vec<isize>>();
     let perms = ph::Heap::new(xs);
 
     let mut best_val = 0;
 
     for perm in perms {
-
         let mut input = 0;
         let mut amps = Vec::new();
 
@@ -63,11 +57,8 @@ fn second_star(program: &[isize]) -> ProblemResult<isize> {
             amps.push(Computer::new(program, Some(vec![*j])))
         }
 
-        'outer:
-        loop {
-
+        'outer: loop {
             for amp in amps.iter_mut() {
-
                 let r = exec_amp(amp, input)?;
                 if r.0 {
                     break 'outer;
@@ -75,13 +66,11 @@ fn second_star(program: &[isize]) -> ProblemResult<isize> {
 
                 input = r.1;
             }
+        }
 
-       }
-
-       if input > best_val {
-           best_val = input;
-       }
-
+        if input > best_val {
+            best_val = input;
+        }
     }
 
     Ok(best_val)

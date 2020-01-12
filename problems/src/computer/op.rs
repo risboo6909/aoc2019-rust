@@ -13,26 +13,23 @@ pub(crate) struct Modes {
 }
 
 impl Modes {
-
     pub(crate) fn new(mode_flags: &[usize]) -> Self {
-
         let mut tmp = HashMap::new();
 
         for (idx, flag) in mode_flags.iter().enumerate() {
-            tmp.insert(idx,
-            if *flag == 0 {
-                Mode::Indirect
-            } else if *flag == 1 {
-                Mode::Direct
-            } else {
-                Mode::Relative
-            });
+            tmp.insert(
+                idx,
+                if *flag == 0 {
+                    Mode::Indirect
+                } else if *flag == 1 {
+                    Mode::Direct
+                } else {
+                    Mode::Relative
+                },
+            );
         }
 
-        Self {
-            mode_flags: tmp
-        }
-
+        Self { mode_flags: tmp }
     }
 
     pub(crate) fn get_mode(&self, idx: usize) -> Mode {
@@ -41,7 +38,6 @@ impl Modes {
         }
         self.mode_flags[&idx]
     }
-
 }
 
 // one operator description

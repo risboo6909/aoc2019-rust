@@ -1,8 +1,8 @@
-use std::collections::{HashMap, HashSet, VecDeque};
 use failure::Error;
+use std::collections::{HashMap, HashSet, VecDeque};
 
+use crate::computer::{parse_intcode, Computer};
 use utils::{result, ProblemResult, RetOne};
-use crate::computer::{Computer, parse_intcode};
 
 #[derive(Copy, Clone)]
 enum Dir {
@@ -41,7 +41,6 @@ struct Tile {
 }
 
 impl Dir {
-
     fn to_coords(self, cur_pos: Coords) -> Coords {
         match self {
             Dir::North => (cur_pos.0, cur_pos.1 - 1),
@@ -59,7 +58,6 @@ impl Dir {
             Dir::East => Dir::West,
         }
     }
-
 }
 
 impl From<Dir> for isize {
@@ -75,50 +73,48 @@ impl From<Dir> for isize {
 
 type Area = HashMap<Coords, Tile>;
 
-
 fn make_move(c: &mut Computer, move_to: Dir) -> ProblemResult<Output> {
-
     c.set_stdin(move_to.into());
 
-    Ok(
-        loop {
+    Ok(loop {
+        // wait until droid finishes its movement and get its output
 
-            // wait until droid finishes its movement and get its output
+        c.step()?;
 
-            c.step()?;
-
-            match c.get_output() {
-                Ok(x) => break x,
-                Err(_) => {
-                    // no output yet, droid is still moving
-                    continue;
-                }
+        match c.get_output() {
+            Ok(x) => break x,
+            Err(_) => {
+                // no output yet, droid is still moving
+                continue;
             }
-
-        }.into()
-    )
-
+        }
+    }
+    .into())
 }
 
-fn rec(c: &mut Computer, program: &[isize], cur_pos: Coords, visited: &mut Area, moves_cnt: usize) -> ProblemResult<usize> {
-
+fn rec(
+    c: &mut Computer,
+    program: &[isize],
+    cur_pos: Coords,
+    visited: &mut Area,
+    moves_cnt: usize,
+) -> ProblemResult<usize> {
     let mut min_score = std::usize::MAX;
 
     for dir in DIRS.iter() {
-
         let new_coords = dir.to_coords(cur_pos);
         if visited.contains_key(&new_coords) && visited[&new_coords].moves_cnt <= (moves_cnt + 1) {
-            continue
+            continue;
         }
 
         // move forward
         let tile = make_move(c, *dir)?;
 
-        visited.insert(new_coords, Tile{moves_cnt, tile});
+        visited.insert(new_coords, Tile { moves_cnt, tile });
 
         if tile == Output::Wall {
             // drone position isn't changed if it hits a wall
-            continue
+            continue;
         }
 
         if tile == Output::Oxygen {
@@ -132,15 +128,12 @@ fn rec(c: &mut Computer, program: &[isize], cur_pos: Coords, visited: &mut Area,
 
         // rewind back
         make_move(c, dir.opposite_dir())?;
-
     }
 
     Ok(min_score)
-
 }
 
 fn first_star(program: &[isize]) -> ProblemResult<(usize, Area)> {
-
     let mut c = Computer::new(program, None);
     let mut visited: Area = HashMap::new();
 
@@ -148,11 +141,9 @@ fn first_star(program: &[isize]) -> ProblemResult<(usize, Area)> {
     let res = rec(&mut c, &program, (0, 0), &mut visited, 0)?;
 
     Ok((res, visited))
-
 }
 
 fn get_vicinity(map: &Area, coords: Coords) -> VecDeque<Coords> {
-
     let mut tmp = VecDeque::new();
 
     for inc in &[1, -1] {
@@ -172,19 +163,17 @@ fn get_vicinity(map: &Area, coords: Coords) -> VecDeque<Coords> {
     }
 
     tmp
-
 }
 
 fn second_star(map: &Area) -> ProblemResult<usize> {
-
     let mut oxygen_coords = Coords::default();
 
     for (coords, tile) in map {
         if tile.tile == Output::Oxygen {
             oxygen_coords = *coords;
-            break
+            break;
         }
-    };
+    }
 
     let mut q = get_vicinity(map, oxygen_coords);
     let mut visited: HashSet<Coords> = HashSet::new();
@@ -194,10 +183,9 @@ fn second_star(map: &Area) -> ProblemResult<usize> {
     let mut iters = 0;
 
     loop {
-
         for coords in q.drain(..).collect::<HashSet<Coords>>() {
             if visited.contains(&coords) {
-                continue
+                continue;
             };
 
             visited.insert(coords);
@@ -205,11 +193,10 @@ fn second_star(map: &Area) -> ProblemResult<usize> {
         }
 
         if q.is_empty() {
-            break
+            break;
         }
 
         iters += 1;
-
     }
 
     Ok(iters)

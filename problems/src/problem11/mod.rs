@@ -1,9 +1,9 @@
-use std::collections::HashMap;
 use rand::prelude::*;
+use std::collections::HashMap;
 
 use failure::Error;
 
-use crate::computer::{Computer, parse_intcode};
+use crate::computer::{parse_intcode, Computer};
 use utils::{result, ProblemResult, Ret};
 
 #[derive(Hash, Eq, PartialEq)]
@@ -75,7 +75,6 @@ impl From<isize> for Direct {
 }
 
 fn drawer(program: &[isize], board: &mut HashMap<Coords, Color>) -> ProblemResult<isize> {
-
     let mut x = 0;
     let mut y = 0;
 
@@ -84,18 +83,19 @@ fn drawer(program: &[isize], board: &mut HashMap<Coords, Color>) -> ProblemResul
     let mut c = Computer::new(program, None);
 
     loop {
-
         c.step()?;
 
         if c.is_finished() {
-            break
+            break;
         } else if c.waits_input() {
-            c.set_stdin(isize::from(*board.get(&Coords{x, y}).unwrap_or(&Color::from(0))));
+            c.set_stdin(isize::from(
+                *board.get(&Coords { x, y }).unwrap_or(&Color::from(0)),
+            ));
             c.step()?;
         }
 
         let new_color: Color = c.get_output()?.into();
-        board.insert(Coords{x, y}, new_color);
+        board.insert(Coords { x, y }, new_color);
 
         c.step()?;
 
@@ -125,11 +125,9 @@ fn drawer(program: &[isize], board: &mut HashMap<Coords, Color>) -> ProblemResul
             Direct::Left => x -= 1,
             Direct::Right => x += 1,
         }
-
     }
 
     Ok(0)
-
 }
 
 fn first_star(program: &[isize]) -> ProblemResult<usize> {
@@ -141,27 +139,26 @@ fn first_star(program: &[isize]) -> ProblemResult<usize> {
 }
 
 fn second_star(program: &[isize]) -> ProblemResult<String> {
-
     let mut board = HashMap::new();
-    board.insert(Coords{x: 0, y: 0}, Color::White);
+    board.insert(Coords { x: 0, y: 0 }, Color::White);
 
     drawer(program, &mut board)?;
 
-    let min_x = board.keys().fold(std::isize::MAX, |min, e|
-        if min > e.x { e.x } else { min }
-    );
+    let min_x = board
+        .keys()
+        .fold(std::isize::MAX, |min, e| if min > e.x { e.x } else { min });
 
-    let min_y = board.keys().fold(std::isize::MAX, |min, e|
-        if min > e.y { e.y } else { min }
-    );
+    let min_y = board
+        .keys()
+        .fold(std::isize::MAX, |min, e| if min > e.y { e.y } else { min });
 
-    let max_x = board.keys().fold(std::isize::MIN, |max, e|
-        if max < e.x { e.x } else { max }
-    );
+    let max_x = board
+        .keys()
+        .fold(std::isize::MIN, |max, e| if max < e.x { e.x } else { max });
 
-    let max_y = board.keys().fold(std::isize::MIN, |max, e|
-        if max < e.y { e.y } else { max }
-    );
+    let max_y = board
+        .keys()
+        .fold(std::isize::MIN, |max, e| if max < e.y { e.y } else { max });
 
     let width = max_x - min_x;
     let height = max_y - min_y + 1;
@@ -169,7 +166,13 @@ fn second_star(program: &[isize]) -> ProblemResult<String> {
     // translate all points to positive ones
     let mut buf: HashMap<Coords, Color> = HashMap::new();
     for (coords, color) in board.iter() {
-        buf.insert(Coords{x: coords.x - min_x, y: coords.y - min_y}, *color);
+        buf.insert(
+            Coords {
+                x: coords.x - min_x,
+                y: coords.y - min_y,
+            },
+            *color,
+        );
     }
 
     let filename = "day11-2.png";
@@ -179,19 +182,22 @@ fn second_star(program: &[isize]) -> ProblemResult<String> {
     let mut rng = rand::thread_rng();
 
     for (idx, pixel) in imgbuf.pixels_mut().enumerate() {
-
-        match board.get(&Coords {
-            x: ((idx as isize) % width),
-            y: ((idx as isize) / width),
-        }).unwrap_or(&Color::Black) {
+        match board
+            .get(&Coords {
+                x: ((idx as isize) % width),
+                y: ((idx as isize) / width),
+            })
+            .unwrap_or(&Color::Black)
+        {
             Color::Black => *pixel = image::Rgb([0, 0, 0]),
-            Color::White => *pixel = image::Rgb([
-                (rng.gen::<f32>() * 255.0) as u8,
-                (rng.gen::<f32>() * 255.0) as u8,
-                (rng.gen::<f32>() * 255.0) as u8],
-            ),
+            Color::White => {
+                *pixel = image::Rgb([
+                    (rng.gen::<f32>() * 255.0) as u8,
+                    (rng.gen::<f32>() * 255.0) as u8,
+                    (rng.gen::<f32>() * 255.0) as u8,
+                ])
+            }
         };
-
     }
 
     imgbuf.save(filename).unwrap();
@@ -203,5 +209,8 @@ pub(crate) fn solve() -> Result<Ret<usize, String>, Error> {
     let input_raw = include_str!("./input");
     let input = parse_intcode(input_raw)?;
 
-    Ok(result(first_star(&input.clone()), second_star(&input.clone())))
+    Ok(result(
+        first_star(&input.clone()),
+        second_star(&input.clone()),
+    ))
 }

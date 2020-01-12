@@ -1,8 +1,8 @@
-use std::fmt;
 use failure::Error;
+use std::fmt;
 
-use utils::{split_by_lines, result, ProblemResult, RetOne,};
 use num_integer::Integer;
+use utils::{result, split_by_lines, ProblemResult, RetOne};
 
 const SIM_STEPS: usize = 1000;
 const X: usize = 0;
@@ -45,7 +45,6 @@ fn compute_energy(objects: &[Point3], vel: &[Point3]) -> usize {
 }
 
 fn update_vel(objects: &[Point3], vel: &mut [Point3], idx1: usize, idx2: usize) {
-
     let obj1 = objects[idx1];
     let obj2 = objects[idx2];
 
@@ -84,11 +83,14 @@ fn update_coords(objects: &mut [Point3], vel: &[Point3]) {
 }
 
 fn first_star(mut objects: &mut Vec<Point3>) -> ProblemResult<usize> {
-
-    let mut vel = vec![Point3::default(), Point3::default(), Point3::default(), Point3::default()];
+    let mut vel = vec![
+        Point3::default(),
+        Point3::default(),
+        Point3::default(),
+        Point3::default(),
+    ];
 
     for _ in 0..SIM_STEPS {
-
         // apply gravity
         for (idx1, _) in objects.iter().enumerate() {
             for (idx2, _) in objects.iter().enumerate().skip(idx1 + 1) {
@@ -98,19 +100,16 @@ fn first_star(mut objects: &mut Vec<Point3>) -> ProblemResult<usize> {
 
         // apply velocities
         update_coords(&mut objects, &vel);
-
     }
 
     let energy = compute_energy(&objects, &vel);
 
     Ok(energy)
-
 }
 
 fn update_component(iter: usize, e: &mut IterDelta) {
-
     if e.found {
-        return
+        return;
     }
 
     let delta = iter - e.iter;
@@ -124,11 +123,9 @@ fn update_component(iter: usize, e: &mut IterDelta) {
             e.delta = delta
         }
     }
-
 }
 
 fn second_star(mut objects: &mut Vec<Point3>) -> ProblemResult<usize> {
-
     let start_pos = objects.clone();
 
     let mut iter = 0;
@@ -138,7 +135,6 @@ fn second_star(mut objects: &mut Vec<Point3>) -> ProblemResult<usize> {
 
     // find periods
     loop {
-
         // apply gravity
         for (idx1, _) in objects.iter().enumerate() {
             for (idx2, _) in objects.iter().enumerate().skip(idx1 + 1) {
@@ -150,20 +146,32 @@ fn second_star(mut objects: &mut Vec<Point3>) -> ProblemResult<usize> {
         update_coords(&mut objects, &vel);
 
         // check periods
-        if objects.iter().enumerate().all(|(i, obj)| obj.x == start_pos[i].x && vel[i].x == 0) {
+        if objects
+            .iter()
+            .enumerate()
+            .all(|(i, obj)| obj.x == start_pos[i].x && vel[i].x == 0)
+        {
             update_component(iter, &mut periods[X]);
         }
 
-        if objects.iter().enumerate().all(|(i, obj)| obj.y == start_pos[i].y && vel[i].y == 0) {
+        if objects
+            .iter()
+            .enumerate()
+            .all(|(i, obj)| obj.y == start_pos[i].y && vel[i].y == 0)
+        {
             update_component(iter, &mut periods[Y]);
         }
 
-        if objects.iter().enumerate().all(|(i, obj)| obj.z == start_pos[i].z && vel[i].z == 0) {
+        if objects
+            .iter()
+            .enumerate()
+            .all(|(i, obj)| obj.z == start_pos[i].z && vel[i].z == 0)
+        {
             update_component(iter, &mut periods[Z]);
         }
 
         if periods.iter().all(|e| e.found) {
-            break
+            break;
         }
 
         iter += 1;
@@ -179,7 +187,6 @@ pub(crate) fn solve() -> Result<RetOne<usize>, Error> {
     let input_raw = include_str!("./input");
 
     let input = split_by_lines(input_raw, &|line: &str| {
-
         let trimmed = &line[1..line.len() - 1];
         let mut tmp = Vec::with_capacity(3);
 
@@ -194,8 +201,10 @@ pub(crate) fn solve() -> Result<RetOne<usize>, Error> {
         };
 
         Ok(p)
-
     })?;
 
-    Ok(result(first_star(&mut input.clone()), second_star(&mut input.clone())))
+    Ok(result(
+        first_star(&mut input.clone()),
+        second_star(&mut input.clone()),
+    ))
 }

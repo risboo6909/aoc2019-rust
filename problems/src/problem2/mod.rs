@@ -1,10 +1,9 @@
-use failure::{Error, format_err};
+use failure::{format_err, Error};
 
-use crate::computer::{Computer, parse_intcode};
+use crate::computer::{parse_intcode, Computer};
 use utils::{result, ProblemResult, RetOne};
 
 fn first_star(program: &mut [isize]) -> ProblemResult<isize> {
-
     // input for the program
     program[1] = 12;
     program[2] = 2;
@@ -18,13 +17,11 @@ fn first_star(program: &mut [isize]) -> ProblemResult<isize> {
 }
 
 fn second_star(program: &mut [isize]) -> ProblemResult<isize> {
-
     let mut saved_program: Vec<isize> = vec![0; program.len()];
 
     saved_program.clone_from_slice(&program);
 
     for n in 0..10000isize {
-
         let program = &mut saved_program.clone();
 
         let (noun, verb) = (n % 100, n / 100);
@@ -43,7 +40,6 @@ fn second_star(program: &mut [isize]) -> ProblemResult<isize> {
     }
 
     Err(format_err!("Couldn't find appropriate solution!"))
-
 }
 
 pub(crate) fn solve() -> Result<RetOne<isize>, Error> {
