@@ -2,7 +2,7 @@ use failure::{format_err, Error};
 use std::collections::{HashMap, HashSet};
 
 use utils::{
-    man_dist_2d, result, split_by_comma, split_by_lines, ParseResult, ProblemResult, RetOne,
+    man_dist_2d, result, split_by_comma, split_by_lines, ParseResult, ProblemResult, RetTypes
 };
 
 #[derive(Hash, PartialEq, Eq, Copy, Clone)]
@@ -15,21 +15,21 @@ enum Dir {
 
 struct Op {
     dir: Dir,
-    steps: u32,
+    steps: usize,
 }
 
 #[derive(Hash, PartialEq, Eq, Copy, Clone)]
 struct Point {
-    x: i32,
-    y: i32,
+    x: isize,
+    y: isize,
 }
 
 struct Cursor {
-    wire_len: u32,
+    wire_len: usize,
     coords: Point,
 }
 
-fn new_cursor(x: i32, y: i32) -> Cursor {
+fn new_cursor(x: isize, y: isize) -> Cursor {
     Cursor {
         wire_len: 0,
         coords: Point { x, y },
@@ -51,7 +51,7 @@ fn make_pair(item: &str) -> ParseResult<Op> {
 
     Ok(Op {
         dir,
-        steps: amount_str.parse::<u32>()?,
+        steps: amount_str.parse::<usize>()?,
     })
 }
 
@@ -67,7 +67,7 @@ fn advance_cursor(mut cursor: &mut Cursor, dir: Dir) {
 
 fn make_moves(
     points: &mut HashMap<Point, HashSet<usize>>,
-    lengths: &mut HashMap<(usize, Point), u32>,
+    lengths: &mut HashMap<(usize, Point), usize>,
     cursor: &mut Cursor,
     op: &Op,
     wire_no: usize,
@@ -94,7 +94,7 @@ fn make_moves(
     intersections
 }
 
-fn solve_both_stars(wires: &[Vec<Op>]) -> ProblemResult<(u32, u32)> {
+fn solve_both_stars(wires: &[Vec<Op>]) -> ProblemResult<(usize, usize)> {
     let mut points = HashMap::new();
     let mut lengths = HashMap::new();
 
@@ -124,7 +124,7 @@ fn solve_both_stars(wires: &[Vec<Op>]) -> ProblemResult<(u32, u32)> {
 
     // find intersection with the minimum wires length (part 2)
 
-    let mut min_total_len = std::u32::MAX;
+    let mut min_total_len = std::usize::MAX;
 
     for p in overlaps.iter() {
         let net_length = (0..wires.len())
@@ -139,12 +139,12 @@ fn solve_both_stars(wires: &[Vec<Op>]) -> ProblemResult<(u32, u32)> {
     let min_point = min_point.unwrap();
 
     Ok((
-        man_dist_2d(min_point.x, min_point.y, 0, 0) as u32,
+        man_dist_2d(min_point.x, min_point.y, 0, 0) as usize,
         min_total_len,
     ))
 }
 
-pub(crate) fn solve() -> Result<RetOne<u32>, Error> {
+pub(crate) fn solve() -> Result<RetTypes, Error> {
     let input_raw = include_str!("./input");
 
     let tmp: Result<Vec<_>, _> = split_by_lines(input_raw, &|e: &str| Ok(e.to_owned()))?
@@ -154,5 +154,9 @@ pub(crate) fn solve() -> Result<RetOne<u32>, Error> {
 
     let solutions = solve_both_stars(&tmp?)?;
 
-    Ok(result(Ok(solutions.0), Ok(solutions.1)))
+    Ok(
+        RetTypes::Usize(
+            result(Ok(solutions.0), Ok(solutions.1))
+        )
+    )
 }

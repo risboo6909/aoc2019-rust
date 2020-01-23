@@ -1,10 +1,10 @@
 use failure::Error;
-use std::{collections::HashMap, fmt};
+use std::{collections::HashMap, fmt, cmp::Ordering};
 
 use itertools::Itertools;
 use std::collections::hash_map::Entry;
 
-use utils::{result, split_by_lines, ParseResult, ProblemResult, RetOne};
+use utils::{result, split_by_lines, ParseResult, ProblemResult, RetTypes};
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 struct Term {
@@ -175,31 +175,39 @@ fn second_star(dep_map: &HashMap<String, Formulae>) -> ProblemResult<usize> {
 
         let res = compute_ore_consumption(&dep_map, &mut reserve, cur_fuel);
 
-        if res.ore == ore_avail {
-            return Ok(cur_fuel);
-        } else if res.ore > ore_avail {
-            if compute_ore_consumption(&dep_map, &mut reserve, cur_fuel - 1).ore <= ore_avail {
-                return Ok(cur_fuel - 1);
+        match res.ore.cmp(&ore_avail) {
+            Ordering::Greater => {
+                if compute_ore_consumption(&dep_map, &mut reserve, cur_fuel - 1).ore <= ore_avail {
+                    return Ok(cur_fuel - 1);
+                }
+                max_fuel = res.items;
             }
-
-            max_fuel = res.items;
-        } else if res.ore < ore_avail {
-            if compute_ore_consumption(&dep_map, &mut reserve, cur_fuel + 1).ore >= ore_avail {
-                return Ok(cur_fuel);
-            }
-
-            min_fuel = res.items;
+            Ordering::Less =>  {
+                if compute_ore_consumption(&dep_map, &mut reserve, cur_fuel + 1).ore >= ore_avail {
+                    return Ok(cur_fuel);
+                }
+                min_fuel = res.items;
+            },
+            Ordering::Equal => return Ok(cur_fuel),
         }
 
         reserve.clear();
     }
 }
 
-pub(crate) fn solve() -> Result<RetOne<usize>, Error> {
+pub(crate) fn solve() -> Result<RetTypes, Error> {
     let input_raw = include_str!("./input");
 
     let formulas = split_by_lines(input_raw, &parse_line)?;
     let dep_map = make_dep_map(&formulas);
 
-    Ok(result(first_star(&dep_map), second_star(&dep_map)))
+    Ok(
+        RetTypes::Usize(
+            result(
+                first_star(&dep_map),
+                second_star(&dep_map)
+            )
+        )
+    )
+
 }

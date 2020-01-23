@@ -1,7 +1,7 @@
 use failure::{format_err, Error};
 
 use crate::computer::{parse_intcode, Computer};
-use utils::{result, ProblemResult, RetOne};
+use utils::{result, ProblemResult, RetTypes};
 
 fn first_star(program: &mut [isize]) -> ProblemResult<isize> {
     // input for the program
@@ -42,15 +42,19 @@ fn second_star(program: &mut [isize]) -> ProblemResult<isize> {
     Err(format_err!("Couldn't find appropriate solution!"))
 }
 
-pub(crate) fn solve() -> Result<RetOne<isize>, Error> {
+pub(crate) fn solve() -> Result<RetTypes, Error> {
     let input_raw = include_str!("./input");
-    let input = parse_intcode(input_raw)?;
+    let mut input = parse_intcode(input_raw)?;
 
-    let r1 = first_star(&mut input.clone());
-    let r2 = second_star(&mut input.clone());
+    let r1 = first_star(&mut input);
+    let r2 = second_star(&mut input);
 
     assert_eq!(*r1.as_ref().unwrap(), 3_706_713);
     assert_eq!(*r2.as_ref().unwrap(), 8609);
 
-    Ok(result(r1, r2))
+    Ok(
+        RetTypes::Isize(
+            result(r1, r2)
+        )
+    )
 }

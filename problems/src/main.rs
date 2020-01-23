@@ -17,11 +17,13 @@ mod problem7;
 mod problem8;
 mod problem9;
 
+use std::{time::SystemTime, marker::Sync, sync::Arc};
+use crossbeam::{queue::SegQueue, thread};
+use num_cpus;
 use colored::*;
 use failure::Error;
-use std::{fmt::Debug, time::SystemTime};
 
-use utils::Ret;
+use utils::RetTypes;
 
 // problems
 use crate::problem1 as p1;
@@ -41,7 +43,8 @@ use crate::problem7 as p7;
 use crate::problem8 as p8;
 use crate::problem9 as p9;
 
-fn exec<T: Debug, K: Debug>(f: &dyn Fn() -> Result<Ret<T, K>, Error>, problem_no: u32) {
+fn exec(f: &(dyn Fn() -> Result<RetTypes, Error>), problem_no: usize) {
+
     let now = SystemTime::now();
     let result = f();
     let elapsed = now.elapsed().unwrap().as_millis();
@@ -67,26 +70,43 @@ fn exec<T: Debug, K: Debug>(f: &dyn Fn() -> Result<Ret<T, K>, Error>, problem_no
 }
 
 fn main() {
+
     println!("\n{}\n\n", "Advent of code 2019".bold());
+
+    let q: Arc<SegQueue<(&(dyn Fn() -> Result<RetTypes, Error> + Sync), usize)>> = Arc::new(SegQueue::new());
+
+    q.push((&p1::solve, 1));
+    q.push((&p2::solve, 2));
+    q.push((&p3::solve, 3));
+    q.push((&p4::solve, 4));
+    q.push((&p5::solve, 5));
+    q.push((&p6::solve, 6));
+    q.push((&p7::solve, 7));
+    q.push((&p8::solve, 8));
+    q.push((&p9::solve, 9));
+    q.push((&p10::solve, 10));
+    q.push((&p11::solve, 11));
+    q.push((&p12::solve, 12));
+    q.push((&p13::solve, 13));
+    q.push((&p14::solve, 14));
+    q.push((&p15::solve, 15));
+    q.push((&p16::solve, 16));
+
+    println!("{} cores detected\n", num_cpus::get_physical());
 
     let now = SystemTime::now();
 
-    exec(&p1::solve, 1);
-    exec(&p2::solve, 2);
-    exec(&p3::solve, 3);
-    exec(&p4::solve, 4);
-    exec(&p5::solve, 5);
-    exec(&p6::solve, 6);
-    exec(&p7::solve, 7);
-    exec(&p8::solve, 8);
-    exec(&p9::solve, 9);
-    exec(&p10::solve, 10);
-    exec(&p11::solve, 11);
-    exec(&p12::solve, 12);
-    exec(&p13::solve, 13);
-    exec(&p14::solve, 14);
-    exec(&p15::solve, 15);
-    exec(&p16::solve, 16);
+    thread::scope(|s| {
+        for idx in 0..num_cpus::get_physical() {
+            let q = Arc::clone(&q);
+            s.spawn(move |_| {
+                while let Ok((task, task_id)) = q.pop() {
+                    println!("Worker {} executing problem {}\n", idx, task_id);
+                    exec(task, task_id);
+                }
+            });
+        }
+    }).unwrap();
 
     println!(
         "{} {} {}",

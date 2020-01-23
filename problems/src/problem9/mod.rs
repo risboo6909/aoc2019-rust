@@ -1,7 +1,7 @@
 use failure::Error;
 
 use crate::computer::{parse_intcode, Computer};
-use utils::{result, ProblemResult, RetOne};
+use utils::{result, ProblemResult, RetTypes};
 
 fn first_star(program: &[isize]) -> ProblemResult<isize> {
     let mut c = Computer::new(program, Some(vec![1]));
@@ -15,11 +15,17 @@ fn second_star(program: &[isize]) -> ProblemResult<isize> {
     Ok(c.get_output()?)
 }
 
-pub(crate) fn solve() -> Result<RetOne<isize>, Error> {
+pub(crate) fn solve() -> Result<RetTypes, Error> {
     let input_raw = include_str!("./input");
     let input = parse_intcode(input_raw)?;
-    Ok(result(
-        first_star(&input.clone()),
-        second_star(&input.clone()),
-    ))
+
+    Ok(
+        RetTypes::Isize(
+            result(
+                first_star(&input),
+                second_star(&input),
+            )
+        )
+    )
+
 }

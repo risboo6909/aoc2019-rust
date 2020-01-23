@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use failure::{format_err, Error};
-use utils::{result, split_by_lines, ProblemResult, RetOne};
+use utils::{result, split_by_lines, ProblemResult, RetTypes};
 
 struct Orbit {
     satellite: String,
@@ -61,7 +61,7 @@ fn second_star(input: &[Orbit]) -> ProblemResult<usize> {
     Err(format_err!("Path not found"))
 }
 
-pub(crate) fn solve() -> Result<RetOne<usize>, Error> {
+pub(crate) fn solve() -> Result<RetTypes, Error> {
     let input_raw = include_str!("./input");
 
     let input: Vec<Orbit> = split_by_lines(input_raw, &|e: &str| {
@@ -72,5 +72,9 @@ pub(crate) fn solve() -> Result<RetOne<usize>, Error> {
         })
     })?;
 
-    Ok(result(first_star(&input), second_star(&input)))
+    Ok(
+        RetTypes::Usize(
+            result(first_star(&input), second_star(&input))
+        )
+    )
 }

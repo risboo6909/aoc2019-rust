@@ -1,7 +1,7 @@
 use image;
 
 use failure::Error;
-use utils::{result, split_by, ProblemResult, Ret};
+use utils::{result, split_by, ProblemResult, RetTypes};
 
 const WIDTH: usize = 25;
 const HEIGHT: usize = 6;
@@ -74,9 +74,14 @@ fn second_star(input: &[usize]) -> ProblemResult<String> {
     Ok(filename.to_owned())
 }
 
-pub(crate) fn solve() -> Result<Ret<usize, String>, Error> {
+pub(crate) fn solve() -> Result<RetTypes, Error> {
     let input_raw = include_str!("./input");
     let input = split_by(input_raw, "", &|e: &str| Ok(e.parse::<usize>()?))?;
 
-    Ok(result(first_star(&input), second_star(&input)))
+    Ok(
+        RetTypes::UsizeString(
+            result(first_star(&input), second_star(&input))
+        )
+    )
+
 }

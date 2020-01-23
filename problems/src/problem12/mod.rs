@@ -1,8 +1,8 @@
-use failure::Error;
 use std::fmt;
+use failure::Error;
 
 use num_integer::Integer;
-use utils::{result, split_by_lines, ProblemResult, RetOne};
+use utils::{result, split_by_lines, ProblemResult, RetTypes};
 
 const SIM_STEPS: usize = 1000;
 const X: usize = 0;
@@ -44,6 +44,7 @@ fn compute_energy(objects: &[Point3], vel: &[Point3]) -> usize {
     energy
 }
 
+#[allow(clippy::comparison_chain)]
 fn update_vel(objects: &[Point3], vel: &mut [Point3], idx1: usize, idx2: usize) {
     let obj1 = objects[idx1];
     let obj2 = objects[idx2];
@@ -183,10 +184,10 @@ fn second_star(mut objects: &mut Vec<Point3>) -> ProblemResult<usize> {
     Ok(lcm)
 }
 
-pub(crate) fn solve() -> Result<RetOne<usize>, Error> {
+pub(crate) fn solve() -> Result<RetTypes, Error> {
     let input_raw = include_str!("./input");
 
-    let input = split_by_lines(input_raw, &|line: &str| {
+    let mut input = split_by_lines(input_raw, &|line: &str| {
         let trimmed = &line[1..line.len() - 1];
         let mut tmp = Vec::with_capacity(3);
 
@@ -203,8 +204,12 @@ pub(crate) fn solve() -> Result<RetOne<usize>, Error> {
         Ok(p)
     })?;
 
-    Ok(result(
-        first_star(&mut input.clone()),
-        second_star(&mut input.clone()),
-    ))
+    Ok(
+        RetTypes::Usize(
+            result(
+                first_star(&mut input),
+                second_star(&mut input),
+            )
+        )
+    )
 }

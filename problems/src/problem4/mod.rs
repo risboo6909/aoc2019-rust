@@ -1,12 +1,12 @@
 use failure::Error;
 use itertools::chain;
 
-use utils::{result, split_digits, ProblemResult, RetOne};
+use utils::{result, split_digits, ProblemResult, RetTypes};
 
-const LOWER_BOUND: u32 = 178_416;
-const UPPER_BOUND: u32 = 676_461;
+const LOWER_BOUND: usize = 178_416;
+const UPPER_BOUND: usize = 676_461;
 
-fn test_non_decr(xs: &[u32]) -> bool {
+fn test_non_decr(xs: &[usize]) -> bool {
     for idx in 0..xs.len() {
         if idx > 0 && xs[idx] < xs[idx - 1] {
             return false;
@@ -15,7 +15,7 @@ fn test_non_decr(xs: &[u32]) -> bool {
     true
 }
 
-fn test_adj(xs: &[u32]) -> bool {
+fn test_adj(xs: &[usize]) -> bool {
     // The idea is simple:
     // we pair list of elements with itself shifted by one, for example, for array [1,2,3,4,4,5]:
     //
@@ -35,7 +35,7 @@ fn test_adj(xs: &[u32]) -> bool {
     false
 }
 
-fn test_adj_two(xs: &[u32]) -> bool {
+fn test_adj_two(xs: &[usize]) -> bool {
     // This function is development of the idea introduced in function "test_adj"
 
     let mut count = 0u32;
@@ -53,12 +53,12 @@ fn test_adj_two(xs: &[u32]) -> bool {
     count == 2
 }
 
-fn pred(n: u32, p1: &dyn Fn(&[u32]) -> bool, p2: &dyn Fn(&[u32]) -> bool) -> bool {
+fn pred(n: usize, p1: &dyn Fn(&[usize]) -> bool, p2: &dyn Fn(&[usize]) -> bool) -> bool {
     let digits = split_digits(n);
     p1(&digits) && p2(&digits)
 }
 
-fn first_star() -> ProblemResult<u32> {
+fn first_star() -> ProblemResult<usize> {
     let counter = (LOWER_BOUND..=UPPER_BOUND)
         .filter_map(|n| {
             if pred(n, &test_non_decr, &test_adj) {
@@ -72,7 +72,7 @@ fn first_star() -> ProblemResult<u32> {
     Ok(counter)
 }
 
-fn second_star() -> ProblemResult<u32> {
+fn second_star() -> ProblemResult<usize> {
     let counter = (LOWER_BOUND..=UPPER_BOUND)
         .filter_map(|n| {
             if pred(n, &test_non_decr, &test_adj_two) {
@@ -86,6 +86,10 @@ fn second_star() -> ProblemResult<u32> {
     Ok(counter)
 }
 
-pub(crate) fn solve() -> Result<RetOne<u32>, Error> {
-    Ok(result(first_star(), second_star()))
+pub(crate) fn solve() -> Result<RetTypes, Error> {
+    Ok(
+        RetTypes::Usize(
+            result(first_star(), second_star())
+        )
+    )
 }

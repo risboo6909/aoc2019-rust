@@ -2,7 +2,7 @@ use failure::Error;
 use permutohedron as ph;
 
 use crate::computer::{parse_intcode, Computer};
-use utils::{result, ProblemResult, RetOne};
+use utils::{result, ProblemResult, RetTypes};
 
 const AMPLIFIERS: isize = 5;
 
@@ -76,15 +76,19 @@ fn second_star(program: &[isize]) -> ProblemResult<isize> {
     Ok(best_val)
 }
 
-pub(crate) fn solve() -> Result<RetOne<isize>, Error> {
+pub(crate) fn solve() -> Result<RetTypes, Error> {
     let input_raw = include_str!("./input");
     let input = parse_intcode(input_raw)?;
 
-    let r1 = first_star(&input.clone());
-    let r2 = second_star(&input.clone());
+    let r1 = first_star(&input);
+    let r2 = second_star(&input);
 
     assert_eq!(*r1.as_ref().unwrap(), 38_500);
     assert_eq!(*r2.as_ref().unwrap(), 33_660_560);
 
-    Ok(result(r1, r2))
+    Ok(
+        RetTypes::Isize(
+            result(r1, r2)
+        )
+    )
 }

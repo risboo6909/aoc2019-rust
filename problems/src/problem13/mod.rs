@@ -1,7 +1,8 @@
+use std::cmp::Ordering;
 use failure::Error;
 
 use crate::computer::{parse_intcode, stop_or_input, Computer};
-use utils::{result, ProblemResult, RetOne};
+use utils::{result, ProblemResult, RetTypes};
 
 const BLOCK: usize = 2;
 
@@ -16,14 +17,16 @@ struct AI {
 impl AI {
     pub(crate) fn get_move_dir(&mut self, ball_x: isize) -> isize {
         // move the pad
-        if ball_x > self.pad_x {
-            self.pad_x += 1;
-            RIGHT
-        } else if ball_x < self.pad_x {
-            self.pad_x -= 1;
-            LEFT
-        } else {
-            STAY
+        match ball_x.cmp(&self.pad_x) {
+            Ordering::Greater => {
+                self.pad_x += 1;
+                RIGHT
+            }
+            Ordering::Less =>  {
+                self.pad_x -= 1;
+                LEFT
+            },
+            Ordering::Equal => STAY,
         }
     }
 }
@@ -81,15 +84,19 @@ fn second_star(program: &mut [isize]) -> ProblemResult<usize> {
     })
 }
 
-pub(crate) fn solve() -> Result<RetOne<usize>, Error> {
+pub(crate) fn solve() -> Result<RetTypes, Error> {
     let input_raw = include_str!("./input");
-    let input = parse_intcode(input_raw)?;
+    let mut input = parse_intcode(input_raw)?;
 
-    let r1 = first_star(&input.clone());
-    let r2 = second_star(&mut input.clone());
+    let r1 = first_star(&input);
+    let r2 = second_star(&mut input);
 
     assert_eq!(*r1.as_ref().unwrap(), 326);
     assert_eq!(*r2.as_ref().unwrap(), 15_988);
 
-    Ok(result(r1, r2))
+    Ok(
+        RetTypes::Usize(
+            result(r1, r2)
+        )
+    )
 }

@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use failure::Error;
 
 use crate::computer::{parse_intcode, Computer};
-use utils::{result, ProblemResult, Ret};
+use utils::{result, ProblemResult, RetTypes};
 
 #[derive(Hash, Eq, PartialEq)]
 struct Coords {
@@ -205,12 +205,17 @@ fn second_star(program: &[isize]) -> ProblemResult<String> {
     Ok(filename.to_owned())
 }
 
-pub(crate) fn solve() -> Result<Ret<usize, String>, Error> {
+pub(crate) fn solve() -> Result<RetTypes, Error> {
     let input_raw = include_str!("./input");
     let input = parse_intcode(input_raw)?;
 
-    Ok(result(
-        first_star(&input.clone()),
-        second_star(&input.clone()),
-    ))
+    Ok(
+        RetTypes::UsizeString(
+            result(
+                first_star(&input),
+                second_star(&input),
+            )
+        )
+    )
+
 }

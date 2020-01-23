@@ -2,7 +2,7 @@ use failure::Error;
 use std::collections::{HashMap, HashSet, VecDeque};
 
 use crate::computer::{parse_intcode, Computer};
-use utils::{result, ProblemResult, RetOne};
+use utils::{result, ProblemResult, RetTypes};
 
 #[derive(Copy, Clone)]
 enum Dir {
@@ -202,15 +202,22 @@ fn second_star(map: &Area) -> ProblemResult<usize> {
     Ok(iters)
 }
 
-pub(crate) fn solve() -> Result<RetOne<usize>, Error> {
+pub(crate) fn solve() -> Result<RetTypes, Error> {
     let input_raw = include_str!("./input");
     let input = parse_intcode(input_raw)?;
 
-    let (r1, visited) = first_star(&input.clone())?;
+    let (r1, visited) = first_star(&input)?;
     let r2 = second_star(&visited);
 
     assert_eq!(r1, 282);
     assert_eq!(*r2.as_ref().unwrap(), 286);
 
-    Ok(result(Ok(r1), r2))
+    Ok(
+        RetTypes::Usize(
+            result(
+                Ok(r1),
+                r2
+            )
+        )
+    )
 }

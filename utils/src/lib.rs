@@ -12,6 +12,9 @@ use num_traits::{sign::Signed, CheckedDiv, Num};
 pub type ProblemResult<T> = Result<T, Error>;
 pub type ParseResult<T> = Result<T, Error>;
 
+mod ret_types;
+pub use ret_types::RetTypes;
+
 pub struct Ret<T, K> {
     answer_basic: ProblemResult<T>,
     answer_adv: ProblemResult<K>,

@@ -1,8 +1,8 @@
-use std::cmp::min;
+use std::cmp::{min, Ordering};
 
 use failure::Error;
 
-use utils::{make_number, number_to_string, result, ProblemResult, RetOne};
+use utils::{make_number, number_to_string, result, ProblemResult, RetTypes};
 
 const BASE_PAT: [isize; 4] = [0, 1, 0, -1];
 
@@ -22,9 +22,10 @@ fn get_pat_by_idx(pos: usize, idx: usize) -> isize {
 
 fn multiply(xs: &[isize], sums: &[isize], group_len: usize) -> isize {
     let mut net = 0;
-    let mut idx = min(group_len - 1, 0);
+    let mut idx = group_len;
 
     while idx < xs.len() {
+
         let y = get_pat_by_idx(group_len, idx + 1);
 
         if group_len > 0 {
@@ -33,15 +34,14 @@ fn multiply(xs: &[isize], sums: &[isize], group_len: usize) -> isize {
                 xs.len() - idx,
             );
 
-            net += if y > 0 {
-                sums[idx + delta - 1] - sums[idx - 1]
-            } else if y < 0 {
-                -(sums[idx + delta - 1] - sums[idx - 1])
-            } else {
-                0
+            net += match y.cmp(&0) {
+                Ordering::Greater => sums[idx + delta - 1] - sums[idx - 1],
+                Ordering::Less =>  -(sums[idx + delta - 1] - sums[idx - 1]),
+                Ordering::Equal => 0,
             };
 
             idx += delta;
+
         } else {
             net += xs[idx] * y;
             idx += 2;
@@ -106,7 +106,7 @@ fn second_star(input: &str, phases: usize, times: usize) -> ProblemResult<String
     Ok(number_to_string(&tmp))
 }
 
-pub(crate) fn solve() -> Result<RetOne<String>, Error> {
+pub(crate) fn solve() -> Result<RetTypes, Error> {
     let input_raw = include_str!("./input");
     let input = input_raw.trim();
 
@@ -117,5 +117,9 @@ pub(crate) fn solve() -> Result<RetOne<String>, Error> {
     let r2 = second_star(input, 100, 10000);
     assert_eq!(*r2.as_ref().unwrap(), "79723033");
 
-    Ok(result(r1, r2))
+    Ok(
+        RetTypes::String(
+            result(r1, r2)
+        )
+    )
 }

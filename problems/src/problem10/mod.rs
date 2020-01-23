@@ -5,7 +5,7 @@ use failure::Error;
 
 use utils::{
     dot_product_2d, normalize_2d, result, split_by, split_by_lines, vec_product_2d, ProblemResult,
-    RetOne,
+    RetTypes,
 };
 
 const PREC: f64 = 1f64 - EPSILON;
@@ -227,7 +227,7 @@ fn second_start(field: &mut Vec<Vec<Point>>, base_coords: Coords<usize>) -> Prob
     }
 }
 
-pub(crate) fn solve() -> Result<RetOne<usize>, Error> {
+pub(crate) fn solve() -> Result<RetTypes, Error> {
     let input_raw = include_str!("./input");
     let mut input = split_by_lines(input_raw, &|line: &str| {
         Ok(split_by(line, "", &|e: &str| {
@@ -240,8 +240,14 @@ pub(crate) fn solve() -> Result<RetOne<usize>, Error> {
     })?;
 
     let (max_visible, station_coords) = first_star(&input)?;
-    Ok(result(
-        Ok(max_visible),
-        second_start(&mut input, station_coords),
-    ))
+
+    Ok(
+        RetTypes::Usize(
+            result(
+                Ok(max_visible),
+                second_start(&mut input, station_coords),
+            )
+        )
+    )
+
 }
